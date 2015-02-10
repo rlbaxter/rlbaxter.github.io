@@ -1,8 +1,30 @@
 <html>
 <head>
 <title>Robert Baxter</title>
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/Showdown.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
-<h1>Robert Baxter</h1>
+	<div class="main">
+		<div class="program"></div>
+		<div class="announcements"></div>
+	</div>
+
+	<script type="text/javascript">
+		$( document ).on( 'ready', function() {
+			var sections = [ 'program', 'announcements' ];
+			sections.forEach( function( section ) {
+				$.ajax({
+					url: '/markdown/' + section + '.md',
+					success: function( data ) {
+						var converter = new Showdown.converter();
+						var html = converter.makeHtml( data );
+						$( '.' + section ).html( html );
+					}
+				});
+			});
+		});
+	</script>
 </body>
 </html>
