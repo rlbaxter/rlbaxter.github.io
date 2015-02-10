@@ -19,7 +19,7 @@ body {
   box-sizing: border-box;
   padding: 10px;
 }
-@media (max-width: 790px) {
+@media (max-width: 700px) {
   .main .program,
   .main .announcements {
     width: 100%;
