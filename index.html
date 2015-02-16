@@ -2,30 +2,10 @@
 <head>
 	<title>Robert Baxter</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<script type="text/javascript" src="scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="scripts/Showdown.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
-	<div class="main">
-		<div class="program"></div>
-		<div class="announcements"></div>
-	</div>
-
-	<script type="text/javascript">
-		$( document ).on( 'ready', function() {
-			var sections = [ 'program', 'announcements' ];
-			sections.forEach( function( section ) {
-				$.ajax({
-					url: '/markdown/' + section + '.md',
-					success: function( data ) {
-						var converter = new Showdown.converter();
-						var html = converter.makeHtml( data );
-						$( '.' + section ).html( html );
-					}
-				});
-			});
-		});
-	</script>
+	<h1>Robert Baxter's Github page.</h1>
+	<h2>woot woot</h2>
+	<p><a href="rlbaxter.us">rlbaxter.us</a></p>
 </body>
 </html>
