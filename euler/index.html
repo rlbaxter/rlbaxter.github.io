@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EulerProject</title>
+</head>
+<body>
+
+
+<script>
+	var euler = euler || [];
+	var helpers = helpers || {};
+
+	var solveProblem = function(problem) {
+		var now = Date.now();
+		var soultion;
+		if (euler[problem - 1]) {
+			soultion = euler[problem - 1]();
+			return 'The answer is ' + soultion + '. It took ' + (Date.now() - now).toString() + 'ms to solve this problem.';
+		} else {
+			return 'Problem not solved yet.';
+		}
+	};
+
+	//Problem #1
+	euler[0] = function() {
+		var sum = 0;
+		for (var i = 0; i < 1000; i++) {
+			if (i % 3 === 0 || i % 5 === 0) sum += i;
+		}
+		return sum; // 233168
+	};
+
+	// Problem #2
+	euler[1] = function() {
+		var sum = 0;
+		var fib = helpers.generateFib({maxNumber: 3999999});
+
+		fib.forEach(function(num) {
+			if (num % 2 === 0) sum += num;
+		});
+
+		return sum; // 4613732
+	};
+
+	// Problem #3
+	euler[2] = function() {
+		return helpers.generatePrimeFactorial(600851475143, 10000).pop(); //6857
+	};
+
+	helpers.generateFib = function(opts) {
+		var fib = [1, 2];
+
+		if (opts.places) {
+			for (var i = 2; i < opts.places; i++) {
+				fib[i] = fib[i-1] + fib[i-2];
+			}
+		} else if (opts.maxNumber) {
+			while (fib[fib.length-1] + fib[fib.length-2] <= opts.maxNumber) {
+				fib.push(fib[fib.length-1] + fib[fib.length-2]);
+			}
+		} else {
+			return [];
+		}
+
+		return fib;
+	};
+
+	helpers.isPrime = function(num) {
+		var numIsPrime = true;
+
+		for (var i = 2; i < num; i++) {
+			if (num % i === 0) {
+				numIsPrime = false;
+				break;
+			}
+		}
+
+		return numIsPrime;
+	};
+
+	helpers.generatePrimes = function(opts) {
+		var primes = [];
+		var i = 2;
+		if (opts.places) {
+			while (primes.length < opts.places) {
+				if (this.isPrime(i)) primes.push(i);
+				i++;
+			}
+		} else if (opts.maxNumber) {
+			for (i = 2; i <= opts.maxNumber; i++) {
+				if (this.isPrime(i)) primes.push(i);
+			}
+		} else {
+			return [];
+		}
+		return primes;
+	};
+
+	helpers.generatePrimeFactorial = function(num, threshold) {
+		if (num <= 3 || this.isPrime(num)) return [num];
+		var factorial = [];
+		var primes = this.generatePrimes({maxNumber: (threshold && num > threshold ? threshold : num)});
+		var nestedFactorial;
+
+		for (var i = 0; i < primes.length; i++) {
+			if ( num % primes[i] === 0 ) {
+				factorial.push(primes[i]);
+				nestedFactorial = this.generatePrimeFactorial(num / primes[i], threshold);
+				factorial = factorial.concat(nestedFactorial);
+				break;
+			}
+		}
+
+		return factorial;
+	};
+
+</script>
+</body>
+</html>
