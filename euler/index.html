@@ -44,7 +44,114 @@
 
 	// Problem #3
 	euler[2] = function() {
-		return helpers.generatePrimeFactorial(600851475143, 10000).pop(); //6857
+		return helpers.generatePrimeFactorial(600851475143).pop(); //6857
+	};
+
+	// Problem #4
+	euler[3] = function() {
+		var product;
+		var palindromes = [];
+		for (var i = 999; i >= 900; i--) {
+			for (var j = 999; j >= 900; j--) {
+				product = i * j;
+				if (product.toString() === product.toString().split('').reverse().join('')) palindromes.push(product);
+			}
+		}
+
+		return palindromes.sort().pop(); //906609
+	};
+
+	// Problem #5
+	euler[4] = function() {
+		var result;
+		var divisibleByAll;
+		var numToCheck = 2520;
+
+		while (!result) {
+			divisibleByAll = true;
+
+			for (var i = 2; i <= 20; i++) {
+				if (numToCheck % i !== 0) {
+					divisibleByAll = false;
+					break;
+				}
+			}
+
+			if (divisibleByAll) {
+				result = numToCheck;
+			} else {
+				numToCheck++;
+			}
+		}
+
+		return result; //232792560
+	};
+
+	// Problem #6
+	euler[5] = function() {
+		var sum = 0;
+		var sumOfSquares = 0;
+
+		for (var i = 1; i<=100; i++) {
+			sum += i;
+			sumOfSquares += (i * i);
+		}
+
+		return (sum * sum) - sumOfSquares;
+	};
+
+	// Problem #7
+	euler[6] = function() {
+		return helpers.generatePrimes({places: 10001}).pop(); //104743
+	};
+
+	// Problem #8
+	euler[7] = function() {
+		var nums = [7,3,1,6,7,1,7,6,5,3,1,3,3,0,6,2,4,9,1,9,2,2,5,1,1,9,6,7,4,4,2,6,5,7,4,7,4,2,3,5,5,3,4,9,1,9,4,9,3,4,9,6,9,8,3,5,2,0,3,1,2,7,7,4,5,0,6,3,2,6,2,3,9,5,7,8,3,1,8,0,1,6,9,8,4,8,0,1,8,6,9,4,7,8,8,5,1,8,4,3,8,5,8,6,1,5,6,0,7,8,9,1,1,2,9,4,9,4,9,5,4,5,9,5,0,1,7,3,7,9,5,8,3,3,1,9,5,2,8,5,3,2,0,8,8,0,5,5,1,1,1,2,5,4,0,6,9,8,7,4,7,1,5,8,5,2,3,8,6,3,0,5,0,7,1,5,6,9,3,2,9,0,9,6,3,2,9,5,2,2,7,4,4,3,0,4,3,5,5,7,6,6,8,9,6,6,4,8,9,5,0,4,4,5,2,4,4,5,2,3,1,6,1,7,3,1,8,5,6,4,0,3,0,9,8,7,1,1,1,2,1,7,2,2,3,8,3,1,1,3,6,2,2,2,9,8,9,3,4,2,3,3,8,0,3,0,8,1,3,5,3,3,6,2,7,6,6,1,4,2,8,2,8,0,6,4,4,4,4,8,6,6,4,5,2,3,8,7,4,9,3,0,3,5,8,9,0,7,2,9,6,2,9,0,4,9,1,5,6,0,4,4,0,7,7,2,3,9,0,7,1,3,8,1,0,5,1,5,8,5,9,3,0,7,9,6,0,8,6,6,7,0,1,7,2,4,2,7,1,2,1,8,8,3,9,9,8,7,9,7,9,0,8,7,9,2,2,7,4,9,2,1,9,0,1,6,9,9,7,2,0,8,8,8,0,9,3,7,7,6,6,5,7,2,7,3,3,3,0,0,1,0,5,3,3,6,7,8,8,1,2,2,0,2,3,5,4,2,1,8,0,9,7,5,1,2,5,4,5,4,0,5,9,4,7,5,2,2,4,3,5,2,5,8,4,9,0,7,7,1,1,6,7,0,5,5,6,0,1,3,6,0,4,8,3,9,5,8,6,4,4,6,7,0,6,3,2,4,4,1,5,7,2,2,1,5,5,3,9,7,5,3,6,9,7,8,1,7,9,7,7,8,4,6,1,7,4,0,6,4,9,5,5,1,4,9,2,9,0,8,6,2,5,6,9,3,2,1,9,7,8,4,6,8,6,2,2,4,8,2,8,3,9,7,2,2,4,1,3,7,5,6,5,7,0,5,6,0,5,7,4,9,0,2,6,1,4,0,7,9,7,2,9,6,8,6,5,2,4,1,4,5,3,5,1,0,0,4,7,4,8,2,1,6,6,3,7,0,4,8,4,4,0,3,1,9,9,8,9,0,0,0,8,8,9,5,2,4,3,4,5,0,6,5,8,5,4,1,2,2,7,5,8,8,6,6,6,8,8,1,1,6,4,2,7,1,7,1,4,7,9,9,2,4,4,4,2,9,2,8,2,3,0,8,6,3,4,6,5,6,7,4,8,1,3,9,1,9,1,2,3,1,6,2,8,2,4,5,8,6,1,7,8,6,6,4,5,8,3,5,9,1,2,4,5,6,6,5,2,9,4,7,6,5,4,5,6,8,2,8,4,8,9,1,2,8,8,3,1,4,2,6,0,7,6,9,0,0,4,2,2,4,2,1,9,0,2,2,6,7,1,0,5,5,6,2,6,3,2,1,1,1,1,1,0,9,3,7,0,5,4,4,2,1,7,5,0,6,9,4,1,6,5,8,9,6,0,4,0,8,0,7,1,9,8,4,0,3,8,5,0,9,6,2,4,5,5,4,4,4,3,6,2,9,8,1,2,3,0,9,8,7,8,7,9,9,2,7,2,4,4,2,8,4,9,0,9,1,8,8,8,4,5,8,0,1,5,6,1,6,6,0,9,7,9,1,9,1,3,3,8,7,5,4,9,9,2,0,0,5,2,4,0,6,3,6,8,9,9,1,2,5,6,0,7,1,7,6,0,6,0,5,8,8,6,1,1,6,4,6,7,1,0,9,4,0,5,0,7,7,5,4,1,0,0,2,2,5,6,9,8,3,1,5,5,2,0,0,0,5,5,9,3,5,7,2,9,7,2,5,7,1,6,3,6,2,6,9,5,6,1,8,8,2,6,7,0,4,2,8,2,5,2,4,8,3,6,0,0,8,2,3,2,5,7,5,3,0,4,2,0,7,5,2,9,6,3,4,5,0];
+		var highestProduct = 0;
+		var product;
+
+		for (var i = 0; i < nums.length - 13; i++) {
+			product = 1;
+			for (var j = 0; j < 13; j++) {
+				product *= nums[i+j];
+			}
+
+			if (product > highestProduct) highestProduct = product;
+		}
+
+		return highestProduct; // 23514624000
+	};
+
+	// Problem #9
+	euler[8] = function() {
+		var m = 2;
+		var triple;
+		var winningTriple;
+
+		while (!winningTriple) {
+			for (var n = 1; n < m; n++) {
+				triple = helpers.generatePythagoreanTriple(m, n);
+				if (triple[0] + triple[1] + triple[2] === 1000) {
+					winningTriple = triple;
+					break;
+				}
+			}
+			m++;
+		}
+
+		return (winningTriple[0] * winningTriple[1] * winningTriple[2]); /// 31875000
+	};
+
+	// Problem #10
+	euler[9] = function() {
+		var sum = 0;
+		var primes = helpers.generatePrimes({maxNumber: 1999999});
+		primes.forEach(function(num) {
+			sum += num;
+		});
+
+		return sum; // 142913828922
 	};
 
 	helpers.generateFib = function(opts) {
@@ -67,8 +174,9 @@
 
 	helpers.isPrime = function(num) {
 		var numIsPrime = true;
+		var maxToAttempt = Math.floor(Math.sqrt(num));
 
-		for (var i = 2; i < num; i++) {
+		for (var i = 2; i <= maxToAttempt; i++) {
 			if (num % i === 0) {
 				numIsPrime = false;
 				break;
@@ -81,14 +189,40 @@
 	helpers.generatePrimes = function(opts) {
 		var primes = [];
 		var i = 2;
+		var sieve;
+		var maxToAttempt;
+		var isPrime;
+
 		if (opts.places) {
 			while (primes.length < opts.places) {
-				if (this.isPrime(i)) primes.push(i);
+				//if (this.isPrime(i)) primes.push(i);
+				maxToAttempt = Math.floor(Math.sqrt(i));
+				isPrime = true;
+
+				for (var primeIdx = 0; primeIdx < primes.length; primeIdx++) {
+					if (primes[primeIdx] > maxToAttempt) break;
+					if (i % primes[primeIdx] === 0) {
+						isPrime = false;
+						break;
+					}
+				};
+
+				if (isPrime) primes.push(i);
 				i++;
 			}
 		} else if (opts.maxNumber) {
-			for (i = 2; i <= opts.maxNumber; i++) {
-				if (this.isPrime(i)) primes.push(i);
+			maxToAttempt = Math.floor(Math.sqrt(opts.maxNumber));
+			sieve = new Array(opts.maxNumber).fill(true);
+
+			for (var i = 2; i <= sieve.length; i++) {
+				if (sieve[i-1]) {
+					primes.push(i);
+					if (i <= maxToAttempt) {
+						for (var j = i * 2; j <= sieve.length; j += i) {
+							sieve[j-1] = false;
+						}
+					}
+				}
 			}
 		} else {
 			return [];
@@ -96,22 +230,31 @@
 		return primes;
 	};
 
-	helpers.generatePrimeFactorial = function(num, threshold) {
+	helpers.generatePrimeFactorial = function(num) {
 		if (num <= 3 || this.isPrime(num)) return [num];
 		var factorial = [];
-		var primes = this.generatePrimes({maxNumber: (threshold && num > threshold ? threshold : num)});
+		var primes = this.generatePrimes({maxNumber: Math.floor(Math.sqrt(num))});
 		var nestedFactorial;
 
 		for (var i = 0; i < primes.length; i++) {
 			if ( num % primes[i] === 0 ) {
 				factorial.push(primes[i]);
-				nestedFactorial = this.generatePrimeFactorial(num / primes[i], threshold);
+				nestedFactorial = this.generatePrimeFactorial(num / primes[i]);
 				factorial = factorial.concat(nestedFactorial);
 				break;
 			}
 		}
 
 		return factorial;
+	};
+
+	//Euclid's formula: https://en.wikipedia.org/wiki/Pythagorean_triple
+	helpers.generatePythagoreanTriple = function(m, n) {
+		var a = (m * m) - (n * n);
+		var b = 2 * m * n;
+		var c = (m * m) + (n * n);
+
+		return [a, b, c];
 	};
 
 </script>
