@@ -21,6 +21,12 @@
 		}
 	};
 
+	var timeTest = function( action ) {
+		var start = Date.now();
+		action();
+		return 'Code completed in ' + (Date.now() - start).toString() + 'ms.';
+	};
+
 	//Problem #1
 	euler[0] = function() {
 		var sum = 0;
@@ -246,18 +252,43 @@
 	helpers.generatePrimes = function(opts) {
 		var primes = [];
 		var i = 2;
+		var primeIdx;
 		var sieve;
 		var maxToAttempt;
 		var isPrime;
 
 		if (opts.places) {
+			opts.maxNumber  = Math.ceil((opts.places * (2.4 * .9410 * Math.log(opts.places))/2)) + 64;
+		}
+
+		if (opts.maxNumber) {
+			maxToAttempt = Math.floor(Math.sqrt(opts.maxNumber));
+			sieve = new Uint8Array(opts.maxNumber);
+
+			for (i = 2; i <= sieve.length; i++) {
+				if (!sieve[i-1]) {
+					primes.push(i);
+					if (i <= maxToAttempt) {
+						for (var j = i * 2; j <= sieve.length; j += i) {
+							sieve[j-1] = 1;
+						}
+					}
+				}
+			}
+		} else {
+			return [];
+		}
+		if (opts.places) {
+			if ( primes.length < opts.places ) console.warm('Ballpark fell short. Only ' + primes.length.toString + ' found.');
+			i = primes[primes.length - 1] + 1;
+
 			while (primes.length < opts.places) {
-				//if (this.isPrime(i)) primes.push(i);
 				maxToAttempt = Math.floor(Math.sqrt(i));
 				isPrime = true;
 
-				for (var primeIdx = 0; primeIdx < primes.length; primeIdx++) {
+				for (primeIdx = 0; primeIdx < primes.length; primeIdx++) {
 					if (primes[primeIdx] > maxToAttempt) break;
+
 					if (i % primes[primeIdx] === 0) {
 						isPrime = false;
 						break;
@@ -267,23 +298,10 @@
 				if (isPrime) primes.push(i);
 				i++;
 			}
-		} else if (opts.maxNumber) {
-			maxToAttempt = Math.floor(Math.sqrt(opts.maxNumber));
-			sieve = new Array(opts.maxNumber).fill(true);
 
-			for (var i = 2; i <= sieve.length; i++) {
-				if (sieve[i-1]) {
-					primes.push(i);
-					if (i <= maxToAttempt) {
-						for (var j = i * 2; j <= sieve.length; j += i) {
-							sieve[j-1] = false;
-						}
-					}
-				}
-			}
-		} else {
-			return [];
+			if (primes.length > opts.places) primes = primes.slice(0, opts.places);
 		}
+
 		return primes;
 	};
 
