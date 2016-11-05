@@ -77,21 +77,23 @@ a:hover {
 
 button,
 .button {
-	background: #567291;
+	border: 1px solid #567291;
 	text-decoration: none;
 	cursor: pointer;
 	outline: 0;
 	-webkit-appearance: none;
-	border: 0;
-	color: rgba(255, 255, 255, 0.7);
-	border-radius: 2px;
-	padding: 10px 20px;
+	color: #567291;
+	border-radius: 4px;
+	padding: 5px 20px;
 	display: inline-block;
+	text-decoration: none;
 }
 
 button:hover,
 .button:hover {
-	background: #4d6581;
+	background: #567291;
+	color: rgba(255, 255, 255, 0.5);
+	text-decoration: none;
 }
 
 hr {
@@ -214,6 +216,21 @@ body {
 
 .content p:first-of-type {
 	margin-top: 0;
+}
+
+.contact-buttons {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	margin-top: 35px;
+}
+
+.contact-buttons li {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	margin-bottom: 10px;
 }
 
 @media (min-width: 460px) {
