@@ -21,6 +21,18 @@
 		}
 	};
 
+	var solveAll = function() {
+		var now = Date.now();
+		var soultions = [];
+		var problemCount = 0;
+		euler.forEach( function( problem ){
+			soultions.push( problem ? problem() : 'not solved');
+			problemCount += problem ? 1 : 0;
+		});
+		console.log('solved ' + problemCount + ' problems in ' + (Date.now() - now).toString() + 'ms');
+		return soultions;
+	};
+
 	var timeTest = function( action ) {
 		var start = Date.now();
 		action();
@@ -217,6 +229,23 @@
 		return highestProduct; //70600674
 	};
 
+	// Problem #12
+	euler[11] = function() {
+		var triangles = [1];
+		var nextNum = 1;
+		var result;
+
+		while (!result) {
+			nextNum = nextNum + triangles.length +1;
+			triangles.push(nextNum);
+			if (helpers.generateFactors(nextNum).length > 500) {
+				result = nextNum;
+			}
+		}
+
+		return result; // 76576500
+	};
+
 	helpers.generateFib = function(opts) {
 		var fib = [1, 2];
 
@@ -279,7 +308,7 @@
 			return [];
 		}
 		if (opts.places) {
-			if ( primes.length < opts.places ) console.warm('Ballpark fell short. Only ' + primes.length.toString + ' found.');
+			if ( primes.length < opts.places ) console.warn('Ballpark fell short. Only ' + primes.length + ' found.');
 			i = primes[primes.length - 1] + 1;
 
 			while (primes.length < opts.places) {
@@ -321,6 +350,23 @@
 		}
 
 		return factorial;
+	};
+
+	helpers.generateFactors = function(num) {
+		var factors = [];
+		var maxToAttempt = num;
+
+		for (var i = 1; i< maxToAttempt; i++) {
+			if ( num % i === 0 ) {
+				factors.push(i);
+				maxToAttempt = num/i
+				if ( maxToAttempt !== i ) {
+					factors.push(maxToAttempt);
+				}
+			}
+		}
+
+		return factors;
 	};
 
 	//Euclid's formula: https://en.wikipedia.org/wiki/Pythagorean_triple
