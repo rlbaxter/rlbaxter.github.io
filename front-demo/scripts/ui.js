@@ -21,6 +21,8 @@ frontConf.ui = (function() {
 	var togglePrimaryMenu = function( event ) {
 		var $menu = $( this ).parents( '.primary-nav' );
 
+		$( '.section-nav' ).removeClass( 'open' );
+
 		if ( $win.outerWidth() <= primaryHeaderBreakpoint ) {
 			event.preventDefault();
 			$menu.toggleClass( 'open' );
@@ -29,6 +31,8 @@ frontConf.ui = (function() {
 
 	var toggleSectionMenu = function( event ) {
 		var $menu = $( this ).parents( '.section-nav' );
+
+		$( '.primary-nav' ).removeClass( 'open' );
 
 		if ( $win.outerWidth() <= sectionHeaderBreakpoint ) {
 			event.preventDefault();
