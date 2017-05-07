@@ -1,0 +1,15 @@
+{
+  "name": "frontconf2017",
+  "version": "0.0.0",
+  "keywords": [],
+  "author": "Robert Baxter",
+  "scripts": {
+    "less": "gulp less",
+    "start": "http-server & gulp less:watch"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-less": "^3.3.0"
+  }
+}
