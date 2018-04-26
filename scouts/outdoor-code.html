@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>Scout Law</title>
+		<style>
+			body {
+				text-align: center;
+				font-family: sans-serif;
+			}
+
+			ul, li {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+
+			li {
+				font-size: 25px;
+				padding: 15px;
+				background: lightblue;
+				width: 400px;
+				margin: 10px auto;
+				cursor: pointer;
+				transition: all 0.5s;
+			}
+			li:before {
+				content: attr(data-letter);
+			}
+
+			li.show-word {
+				background: lightgreen;
+			}
+
+			li.show-word:before {
+				content: attr(data-name);
+			}
+		</style>
+		<script
+  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+
+	</head>
+	<body>
+		<h1>As an American I will do my best to...</h1>
+		<ul>
+			<li data-name="Be clean in my outdoor manners" data-letter="Clean"></li>
+			<li data-name="Be careful with fire" data-letter="Careful"></li>
+			<li data-name="Be considerate in the outdoors" data-letter="Considerate"></li>
+			<li data-name="and Be conservation minded" data-letter="Conservation"></li>
+		</ul>
+
+	<script>
+	  	$('li').on('click', function() {
+	  		$(this).toggleClass('show-word');
+	  	});
+  </script>
+	</body>
+</html>
