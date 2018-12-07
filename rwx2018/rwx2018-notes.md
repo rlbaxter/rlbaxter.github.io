@@ -35,7 +35,7 @@ VueJS is:
 * Low time to production
 * Documented Well
 * Renders Quickly
-* Can be adoped incrementally
+* Can be adopted incrementally
 
 Attributes need to be bound:
 
@@ -58,7 +58,7 @@ Events can have modifiers:
 * Components go in the `/components` folder
 * Component Name Should be multi word
 * Component Name should be PascalCase or kabab-case
-* Base components should have a spcific prefix "Base" or "App", etc.
+* Base components should have a specific prefix "Base" or "App", etc.
 * Prefix a single instance component with "The"
     * Single instance components are not reusable
     * if you're passing attributes, it's probably not single instance
@@ -85,7 +85,7 @@ REALITY CHECK... The ground-up Rewrite just isn’t going to happen.
 3. Determine Component Structure
 4. Where is the finish line?
 5. How much time can be spent on this?
-6. Be aware of overengineering
+6. Be aware of over-engineering
 7. Start simple, refactor what you touch, release often
 8. Write tests
 
@@ -96,8 +96,8 @@ REALITY CHECK... The ground-up Rewrite just isn’t going to happen.
 * Action -> Dispatcher -> Store -> Views
 * Single source of truth
 * Data is read only
-* Mutations are sycronous
-* Actions are asycronous
+* Mutations are synchronous
+* Actions are asynchronous
 
 ---
 
@@ -116,9 +116,9 @@ Arrange tests from fastest to slowest
 4. End to End Test
     * There are more fragile and should only cover your critical experiences
 
-The first unit test you should run is a sanity ckeck. This is as simple as  asserting `true === true`. This will tell you if your testing framework is working correctly
+The first unit test you should run is a sanity check. This is as simple as  asserting `true === true`. This will tell you if your testing framework is working correctly
 
-unit test are sycronous. Use `jest.useFakeTimers()`.
+unit test are synchronous. Use `jest.useFakeTimers()`.
 
 install babel-jest and vue-jest. Make sure to modify the .babelrc file
 
@@ -166,9 +166,9 @@ Websites:
         let color = [255, 255, 100, 0.5];
         let [r, g, , a] = color;
         ```
-    * Array destructring might be good for hash navigation
+    * Array destructuring might be good for hash navigation
 * Spread Operator (array)
-    * Blows out an array into a comma seperated list
+    * Blows out an array into a comma separated list
 * Spread Args
     * The last function argument that get the remainder of the arguments passed
 * Maps, WeakMaps, Sets, WeakSets
@@ -201,7 +201,7 @@ Websites:
 * Modules
 * Templates String
     * ``const fullName = `$(firstName) ${lastName}`;``
-    * can create custome handler functions
+    * can create custom handler functions
 * Async Await
 * Spread operator for objects
 * Object ...rest
@@ -218,7 +218,7 @@ Websites:
 
 ### Session: Improving Quality of JavaScript Code
 
-* Single responsibilty principle (cohesion)
+* Single responsibility principle (cohesion)
 * Single Level of abstraction (Slap)
 * To avoid: `var`, `==`.
 * `use strict;`
@@ -239,7 +239,7 @@ jQuery:
 * Like a row boat
 
 React/Vue:
-* Library treding toward framework
+* Library trending toward framework
 * Like an automatic transmission
 * Like a sail boat
 * Leaner
@@ -247,12 +247,12 @@ React/Vue:
 * Lower learning curve
 * 1 way data binding
 
-Angualr:
+Angular:
 * Moved beyond Framework into Platform
 * Like taking an Uber
-* Like a cruiseship
+* Like a cruise-ship
 * Heavier
-* Regualr DOM
+* Regular DOM
 * High learning curve
     * High developer productivity once learned
 * 2 way data-binding
@@ -272,13 +272,13 @@ Angualr:
     * Feel, Felt, Found
         * I can see how you feel that way. {x} felt the same way until they found {y}
 * Authority
-    * Estabilsh position through credientials and profesianlism
-    * Admit weaknenes first
+    * Establish position through credentials and professionalism
+    * Admit weaknesses first
 * Scarcity
     * What about your idea can you not get anywhere else?
 * Consistency
-    * Peaople live up to what they write down
-    * Start small and build with existing comitments
+    * People live up to what they write down
+    * Start small and build with existing commitments
 * Be Liked
     * Don't start a sentence with "Actually, ...". Start it with "It was my understanding that..."
 
@@ -286,18 +286,18 @@ Angualr:
 
 1. Start with "Why?"
     * The goal is to create valuable functionality, not code
-2. Recognise Value
+2. Recognize Value
     * Understand your user
 3. Cultivate Empathy
     * Does the user care?
 4. The customer is king
-5. Compromise is inevetiable
+5. Compromise is inevitable
 6. Make the right compromises
 7. Push back on the wrong compromises
-    * You can only deliver on your comitments when the buisness delivers on theirs
-8. Embrace Strtegic Tech Debt
+    * You can only deliver on your commitments when the business delivers on theirs
+8. Embrace Strategic Tech Debt
 9. Avoid Unnecessary Tech Debt
-10. Communicate in terms of busnuiss value
+10. Communicate in terms of business value
     
 
 
