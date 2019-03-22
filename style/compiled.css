@@ -148,9 +148,13 @@ pre code {
 }
 
 /* Site Style */
+html,
+body {
+	background: #1d1f21;
+}
+
 body {
 	padding: 8px;
-	background: #1d1f21;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
