@@ -1,1 +1,0 @@
-var rlbaxter = rlbaxter || {};

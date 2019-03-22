@@ -7,7 +7,7 @@
 		<meta name="theme-color" content="#282a2e">
 		<title>rlbaxter.us - Resume</title>
 
-		<link rel="stylesheet" href="../lib/normalize.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
         <link rel="stylesheet" href="../style/compiled.css">
 	</head>
 	<body>
@@ -16,30 +16,29 @@
 			<div class="main"></div>
 		</div>
 
-		<script src="../lib/jquery.js"></script>
-		<script src="../lib/showdown.js"></script>
-		<!-- <script src="../lib/stack-blur.js"></script>
-		<script src="../scripts/main.js"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"></script>
 
 		<script type="text/javascript">
-			$(document).on('ready', function() {
-				$.ajax({
-					url: "/resume/resume.md",
-					context: document.body,
-					success: function(mdText){
-						//where text will be the text returned by the ajax call
-						var converter = new Showdown.converter();
-						var sections = ['aside', 'main'];
-						sections.forEach( function(section) {
-							var start = '{{' + section + '}}';
-							var end   = '{{/' + section + '}}';
-							var section_text = mdText.slice( mdText.indexOf(start) + start.length, mdText.indexOf(end) );
-							$('.' + section).html( converter.makeHtml( section_text ) );
+			(function() {
+				let xhr = new XMLHttpRequest();
+				xhr.open('GET', '/resume/resume.md');
+				xhr.send();
+
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						const md = xhr.responseText;
+						const converter = new showdown.Converter();
+
+						['aside', 'main'].forEach(section => {
+							const start = `{{${section}}}`;
+							const end = `{{/${section}}}`;
+							const sectionMD = md.slice(md.indexOf(start) + start.length, md.indexOf(end));
+
+							document.getElementsByClassName(section)[0].innerHTML = converter.makeHtml(sectionMD);
 						});
 					}
-				});
-			});
+				};
+			})();
 		</script>
-
 	</body>
 </html>
