@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PL2 Program Songs 2019</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            font-size: 17px;
+            padding-top: 54px;
+        }
+
+        a {
+            color: teal;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 54px;
+        }
+
+        h1 {
+            margin: 0 auto;
+            padding: 16px;
+            font-size: 17px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            max-width: 600px;
+            background: white;
+        }
+
+        .songs-list,
+        .songs-list > li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .songs-list {
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        .songs-list > li {
+            padding: 16px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+        .details {
+            flex: 1;
+            padding-right: 16px;
+        }
+
+        .name {
+            font-weight: bold;
+        }
+
+        .details ul {
+            padding-left: 16px;
+        }
+
+        .details li {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .button {
+            display: inline-block;
+            color: #333;
+            text-decoration: none;
+            background: teal;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 4px;
+            width: 96px;
+            text-align: right;
+        }
+
+        .button::after {
+            content: '\BB';
+            font-size: 20px;
+            line-height: 17px;
+        }
+
+        @media (min-width: 600px) {
+            h1,
+            .songs-list {
+                border-right: 1px solid #ddd;
+                border-left: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>PL2 Program Songs</h1>
+    </header>
+    <div id="songs"></div>
+    <script id="songs-template" type="text/x-handlebars">
+        <ul class="songs-list">
+        {{#each this}}
+            <li class="song">
+                <div class="details">
+                    <div class="name">
+                        {{name}}
+                    </div>
+                    <ul>
+                        {{#each notes}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                        {{#if youTubeVideo}}
+                            <li>Watch the <a href="{{youTubeVideo}}" target="_blank">video on YouTube</a>.</li>
+                        {{/if}}
+                    </ul>
+                </div>
+                <a class="button" href="{{churchSite}}" target="_blank">
+                    {{page}}
+                </a>
+            </li>
+        {{/each}}
+        </ul>
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.2.0/handlebars.min.js"></script>
+    <script>
+        (function() {
+            var songs = [
+                {
+                    name: 'He Sent His Son',
+                    page: 'Pg 34',
+                    notes: [],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/he-sent-his-son?lang=eng',
+                },
+                {
+                    name: 'Keep the Commandments',
+                    page: 'Pg 146',
+                    notes: ['First verse only.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/keep-the-commandments?lang=eng',
+                },
+                {
+                    name: 'Search, Ponder, and Pray',
+                    page: 'Pg 109',
+                    notes: ['First verse only.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/search-ponder-and-pray?lang=eng',
+                },
+                {
+                    name: 'Baptism',
+                    page: 'Pg 100',
+                    notes: ['First verse only.', 'Sung by Valiant 7 & 8 classes.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/baptism?lang=eng',
+                },
+                {
+                    name: 'The Holy Ghost',
+                    page: 'Pg 105',
+                    notes: ['First verse only.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/the-holy-ghost?lang=eng',
+                },
+                {
+                    name: 'Repentance',
+                    page: 'Pg 98',
+                    notes: ['First verse only.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/repentance?lang=eng',
+                },
+                {
+                    name: 'The Miracle',
+                    page: 'Music',
+                    notes: [],
+                    churchSite: 'https://www.churchofjesuschrist.org/study/friend/2018/06/the-miracle?lang=eng',
+                    youTubeVideo: 'https://www.youtube.com/watch?v=zZ2djzQ9J64',
+                },
+                {
+                    name: 'I\'ll Walk With You',
+                    page: 'Pg 140',
+                    notes: [],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/ill-walk-with-you?lang=eng',
+                },
+                {
+                    name: 'Come, Follow Me',
+                    page: '#116',
+                    notes: ['Verses 1, 2, 3, and 6.', 'Congregation will join on the 6th verse.'],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/hymns/come-follow-me?lang=eng',
+                },
+                {
+                    name: 'I Feel My Savior\'s Love',
+                    page: 'Pg 74',
+                    notes: [],
+                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/i-feel-my-saviors-love?lang=eng',
+                },
+            ];
+
+            var el = document.getElementById('songs');
+            var template = Handlebars.compile(document.getElementById('songs-template').innerHTML);
+            el.innerHTML = template(songs);
+        })();
+    </script>
+</body>
+</html>
