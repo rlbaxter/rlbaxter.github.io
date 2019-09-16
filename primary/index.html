@@ -46,6 +46,34 @@
             background: white;
         }
 
+        h2 {
+            font-size: 14px;
+            margin: 0;
+            padding: 3px 16px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+            font-weight: normal;
+        }
+
+        nav {
+            border-bottom: 1px solid #ddd;
+            padding: 4px;
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 8px 10px;
+            text-decoration: none;
+        }
+
+        nav a.active {
+            background: #f9f9f9;
+            color: #666;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
         .songs-list,
         .songs-list > li {
             margin: 0;
@@ -53,7 +81,7 @@
             list-style: none;
         }
 
-        .songs-list {
+        #songs {
             margin: 0 auto;
             max-width: 600px;
         }
@@ -103,7 +131,7 @@
 
         @media (min-width: 600px) {
             h1,
-            .songs-list {
+            #songs {
                 border-right: 1px solid #ddd;
                 border-left: 1px solid #ddd;
             }
@@ -112,103 +140,387 @@
 </head>
 <body>
     <header>
-        <h1>PL2 Program Songs</h1>
+        <h1>PL2 Primary Songs</h1>
     </header>
     <div id="songs"></div>
     <script id="songs-template" type="text/x-handlebars">
-        <ul class="songs-list">
-        {{#each this}}
-            <li class="song">
-                <div class="details">
-                    <div class="name">
-                        {{name}}
+        <nav>
+            <a href="#2019" class="{{linkActive '2019' year}}">2019 Program Songs</a>
+            <a href="#2020" class="{{linkActive '2020' year}}">2020 Songs</a>
+        </nav>
+        {{#each sections}}
+            <h2>{{sectionTitle}} {{../year}}</h2>
+            <ul class="songs-list">
+            {{#each songs}}
+                <li class="song">
+                    <div class="details">
+                        <div class="name">
+                            {{name}}
+                        </div>
+                        <ul>
+                            {{#each notes}}
+                                <li>{{this}}</li>
+                            {{/each}}
+                            {{#if youTubeVideo}}
+                                <li>Watch the <a href="{{youTubeVideo}}" target="_blank">video on YouTube</a>.</li>
+                            {{/if}}
+                        </ul>
                     </div>
-                    <ul>
-                        {{#each notes}}
-                            <li>{{this}}</li>
-                        {{/each}}
-                        {{#if youTubeVideo}}
-                            <li>Watch the <a href="{{youTubeVideo}}" target="_blank">video on YouTube</a>.</li>
-                        {{/if}}
-                    </ul>
-                </div>
-                <a class="button" href="{{churchSite}}" target="_blank">
-                    {{page}}
-                </a>
-            </li>
+                    <a class="button" href="{{link this}}" target="_blank">
+                        {{page}}
+                    </a>
+                </li>
+            {{/each}}
+            </ul>
         {{/each}}
-        </ul>
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.2.0/handlebars.min.js"></script>
     <script>
         (function() {
-            var songs = [
-                {
-                    name: 'He Sent His Son',
-                    page: 'Pg 34',
-                    notes: [],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/he-sent-his-son?lang=eng',
-                },
-                {
-                    name: 'Keep the Commandments',
-                    page: 'Pg 146',
-                    notes: ['First verse only.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/keep-the-commandments?lang=eng',
-                },
-                {
-                    name: 'Search, Ponder, and Pray',
-                    page: 'Pg 109',
-                    notes: ['First verse only.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/search-ponder-and-pray?lang=eng',
-                },
-                {
-                    name: 'Baptism',
-                    page: 'Pg 100',
-                    notes: ['First verse only.', 'Sung by CTR 7 & Valiant 8 classes.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/baptism?lang=eng',
-                },
-                {
-                    name: 'The Holy Ghost',
-                    page: 'Pg 105',
-                    notes: ['First verse only.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/the-holy-ghost?lang=eng',
-                },
-                {
-                    name: 'Repentance',
-                    page: 'Pg 98',
-                    notes: ['First verse only.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/repentance?lang=eng',
-                },
-                {
-                    name: 'The Miracle',
-                    page: 'Music',
-                    notes: [],
-                    churchSite: 'https://www.churchofjesuschrist.org/study/friend/2018/06/the-miracle?lang=eng',
-                    youTubeVideo: 'https://www.youtube.com/watch?v=zZ2djzQ9J64',
-                },
-                {
-                    name: 'I\'ll Walk With You',
-                    page: 'Pg 140',
-                    notes: [],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/ill-walk-with-you?lang=eng',
-                },
-                {
-                    name: 'I Feel My Savior\'s Love',
-                    page: 'Pg 74',
-                    notes: ['First verse only.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/childrens-songbook/i-feel-my-saviors-love?lang=eng',
-                },
-                {
-                    name: 'Come, Follow Me',
-                    page: '#116',
-                    notes: ['Verses 1, 2, 3, and 6.', 'Congregation will join on the 6th verse.'],
-                    churchSite: 'https://www.churchofjesuschrist.org/music/library/hymns/come-follow-me?lang=eng',
-                },
-            ];
+            var data = {
+                '2019': [
+                    {
+                        sectionTitle: 'Program Songs',
+                        songs: [
+                            {
+                                name: 'He Sent His Son',
+                                page: 'Pg 34',
+                                notes: [],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Keep the Commandments',
+                                page: 'Pg 146',
+                                notes: ['First verse only.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Search, Ponder, and Pray',
+                                page: 'Pg 109',
+                                notes: ['First verse only.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Baptism',
+                                page: 'Pg 100',
+                                notes: ['First verse only.', 'Sung by CTR 7 & Valiant 8 classes.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Holy Ghost',
+                                page: 'Pg 105',
+                                notes: ['First verse only.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Repentance',
+                                page: 'Pg 98',
+                                notes: ['First verse only.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Miracle',
+                                page: 'Music',
+                                notes: [],
+                                path: 'study/friend/2018/06',
+                                youTubeVideo: 'https://www.youtube.com/watch?v=zZ2djzQ9J64',
+                            },
+                            {
+                                name: 'I\'ll Walk With You',
+                                page: 'Pg 140',
+                                notes: [],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I Feel My Savior\'s Love',
+                                page: 'Pg 74',
+                                notes: ['First verse only.'],
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Come, Follow Me',
+                                page: '#116',
+                                notes: ['Verses 1, 2, 3, and 6.', 'Congregation will join on the 6th verse.'],
+                                path: 'music/library/hymns',
+                            },
+                        ],
+                    },
+                ],
+                '2020': [
+                    {
+                        sectionTitle: 'January',
+                        songs: [
+                            {
+                                name: 'Book of Mormon Stories',
+                                page: 'Pg 118',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Keep the Commandments',
+                                page: 'Pg 146',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Iron Rod',
+                                page: '#274',
+                                path: 'music/library/hymns',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'February',
+                        songs: [
+                            {
+                                name: 'Nephi\'s Courage',
+                                page: 'Pg 120',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I Feel My Savior\'s Love',
+                                page: 'Pg 74',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I Love to See the Temple',
+                                page: 'Pg 95',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'March',
+                        songs: [
+                            {
+                                name: 'When I Am Baptized',
+                                page: 'Pg 103',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Dare to Do Right',
+                                page: 'Pg 158',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'A Child\'s Prayer',
+                                page: 'Pg 12',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'April',
+                        songs: [
+                            {
+                                name: 'Easter Hosanna',
+                                page: 'Pg 68',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'When We\'re Helping',
+                                page: 'Pg 198',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Love One Another',
+                                page: 'Pg 136',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'May',
+                        songs: [
+                            {
+                                name: 'I Will Be Valiant',
+                                page: 'Pg 162',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Help Me, Dear Father',
+                                page: 'Pg 99',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Testimony',
+                                page: '#137',
+                                path: 'music/library/hymns',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'June',
+                        songs: [
+                            {
+                                name: 'We\'ll Bring the World His Truth',
+                                page: 'Pg 172',
+                                path: 'music/library/childrens-songbook',
+                                kabobName: 'well-bring-the-world-his-truth-army-of-helaman',
+                            },
+                            {
+                                name: 'Follow the Prophet',
+                                page: 'Pg 110',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I Want to Be a Missionary Now',
+                                page: 'Pg 168',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'July',
+                        songs: [
+                            {
+                                name: 'My Heavenly Father Loves Me',
+                                page: 'Pg 228',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Faith',
+                                page: 'Pg 96',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'As I Search the Holy Scriptures',
+                                page: '#277',
+                                path: 'music/library/hymns',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'August',
+                        songs: [
+                            {
+                                name: 'Repentance',
+                                page: 'Pg 98',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Still Small Voice',
+                                page: 'Pg 106',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Follow the Prophet',
+                                page: 'Pg 110',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'September',
+                        songs: [
+                            {
+                                name: 'Samuel Tells of the Baby Jesus',
+                                page: 'Pg 36',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I\'m Trying to Be like Jesus',
+                                page: 'Pg 78',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Wise Man and the Foolish Man',
+                                page: 'Pg 281',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'October',
+                        songs: [
+                            {
+                                name: 'Reverently, Quietly',
+                                page: 'Pg 26',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Families Can Be Together Forever',
+                                page: 'Pg 188',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'The Church of Jesus Christ',
+                                page: 'Pg 77',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'November',
+                        songs: [
+                            {
+                                name: 'Jesus Said Love Everyone',
+                                page: 'Pg 61',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Stand for the Right',
+                                page: 'Pg 159',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'I Thank Thee, Dear Father',
+                                page: 'Pg 7',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                    {
+                        sectionTitle: 'December',
+                        songs: [
+                            {
+                                name: 'Search, Ponder, and Pray',
+                                page: 'Pg 109',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'Away in a Manger',
+                                page: 'Pg 42',
+                                path: 'music/library/childrens-songbook',
+                            },
+                            {
+                                name: 'He Sent His Son',
+                                page: 'Pg 34',
+                                path: 'music/library/childrens-songbook',
+                            },
+                        ]
+                    },
+                ]
+            };
+
+            Handlebars.registerHelper('link', function(song) {
+                var domain = 'https://www.churchofjesuschrist.org';
+                var kabobName = song.name
+                    .toLowerCase()
+                    .replace(/'/g, '')
+                    .replace(/,/g, '')
+                    .replace(/\s/g, '-');
+                return `${domain}/${song.path}/${song.kabobName || kabobName}?lang=eng`;
+            });
+
+            Handlebars.registerHelper('linkActive', function(linkYear, currentYear) {
+                return linkYear === currentYear ? 'active' : '';
+            });
 
             var el = document.getElementById('songs');
             var template = Handlebars.compile(document.getElementById('songs-template').innerHTML);
-            el.innerHTML = template(songs);
+
+            function router() {
+                var year = '2019';
+                if (window.location.hash) {
+                    year = window.location.hash.substr(1);
+                }
+                el.innerHTML = template({
+                    year: year,
+                    sections: data[year],
+                });
+            }
+
+            router();
+            window.onhashchange = router;
         })();
     </script>
 </body>
