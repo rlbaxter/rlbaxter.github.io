@@ -148,6 +148,25 @@
         .videos .button {
             width: 100%;
         }
+
+        .new-key {
+            text-align: center;
+            margin: 0;
+            padding: 20px 8px 0;
+        }
+
+        .videos .button.new::before,
+        .new-key::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: firebrick;
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: -6px;
+            vertical-align: middle;
+        }
         
         .videos > li:not(:last-child) {
             margin-bottom: 10px;
@@ -216,6 +235,7 @@
         </nav> -->
         {{#each sections}}
             <h2>{{sectionTitle}} {{../year}}</h2>
+            <p class="new-key">New Video</p>
             <ul class="songs-list">
             {{#each songs}}
                 <li class="song">
@@ -229,7 +249,7 @@
                                 <ul class="videos">
                                     {{#each videos}}
                                         <li>
-                                            <a class="button secondary" href="{{url}}" target="_blank">
+                                            <a class="button secondary {{classNames}}" href="{{url}}" target="_blank">
                                                 {{display}}
                                             </a>
                                         </li>
@@ -280,6 +300,7 @@
                                     {
                                         display: 'Review with Bro. Baxter',
                                         url: 'https://www.youtube.com/watch?v=OH0IcNhmiwU',
+                                        classNames: '',
                                     }
                                 ],
                             },
@@ -296,6 +317,7 @@
                                     {
                                         display: 'Review with Bro. Baxter',
                                         url: 'https://www.youtube.com/watch?v=rTUzoYHiqk4',
+                                        classNames: '',
                                     }
                                 ],
                             },
@@ -312,6 +334,12 @@
                                     {
                                         display: 'Learn with Bro. Baxter',
                                         url: 'https://www.youtube.com/watch?v=-zByax0JuQM',
+                                        classNames: '',
+                                    },
+                                    {
+                                        display: 'Review with Bro. Baxter',
+                                        url: 'https://www.youtube.com/watch?v=sEJoRvvbYDA',
+                                        classNames: 'new',
                                     }
                                 ],
                             },
@@ -321,9 +349,40 @@
                                     display: 'Pg 136',
                                     path: 'music/library/childrens-songbook',
                                 },
+                                videos: [
+                                    {
+                                        display: 'Learn with Bro. Baxter',
+                                        url: 'https://www.youtube.com/watch?v=sWam9CwxkYA',
+                                        classNames: 'new',
+                                    },
+                                ],
                                 notes: [
                                     'Sign Language'
                                 ]
+                            },
+                            {
+                                name: 'Peace in Christ',
+                                mainAction: {
+                                    display: 'Lyrics',
+                                    path: 'study/liahona/2018/01/youth',
+                                },
+                                videos: [
+                                    {
+                                        display: 'Learn with Bro. Baxter',
+                                        url: 'https://www.youtube.com/watch?v=Vhp4RVbcMC8',
+                                        classNames: 'new',
+                                    },
+                                    {
+                                        display: 'Official Video',
+                                        url: 'https://www.youtube.com/watch?v=R46J-GjbRWA',
+                                        classNames: '',
+                                    },
+                                    {
+                                        display: 'Sing Along (just piano)',
+                                        url: 'https://www.youtube.com/watch?v=qkFhRl7RRjU',
+                                        classNames: '',
+                                    }
+                                ],
                             },
                             {
                                 name: 'I Will Be Valiant',
@@ -342,10 +401,12 @@
                                     {
                                         display: 'Official Video',
                                         url: 'https://www.youtube.com/watch?v=3PlyzaKkzTQ',
+                                        classNames: '',
                                     },
                                     {
                                         display: 'Sing Along (just piano)',
                                         url: 'https://www.youtube.com/watch?v=Qu2CWx8TpNE',
+                                        classNames: '',
                                     }
                                 ],
                             },
@@ -357,23 +418,6 @@
                                 },
                                 notes: [
                                     'Both verses',
-                                ],
-                            },
-                            {
-                                name: 'Peace in Christ',
-                                mainAction: {
-                                    display: 'Lyrics',
-                                    path: 'study/liahona/2018/01/youth',
-                                },
-                                videos: [
-                                    {
-                                        display: 'Official Video',
-                                        url: 'https://www.youtube.com/watch?v=R46J-GjbRWA',
-                                    },
-                                    {
-                                        display: 'Sing Along (just piano)',
-                                        url: 'https://www.youtube.com/watch?v=qkFhRl7RRjU',
-                                    }
                                 ],
                             },
                             {
