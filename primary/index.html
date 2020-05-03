@@ -1,482 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PL2 Primary Music</title>
-
-    <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #333;
-            font-size: 17px;
-            padding-top: 54px;
-            background: #f1f1f1;
-        }
-
-        a {
-            color: #5683a7;
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 54px;
-        }
-
-        h1 {
-            margin: 0;
-            padding: 16px;
-            font-size: 17px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-            background: white;
-        }
-
-        h2 {
-            font-size: 14px;
-            margin: 0;
-            padding: 5px 16px;
-            background: #e3eaf0;
-            border-bottom: 1px solid #ccc;
-            font-weight: normal;
-            text-align: center;
-        }
-
-        h3,
-        h4 {
-            margin: 0;
-            font-weight: normal;
-        }
-
-        nav {
-            border-bottom: 1px solid #ddd;
-            padding: 4px;
-        }
-
-        nav a {
-            display: inline-block;
-            padding: 8px 10px;
-            text-decoration: none;
-        }
-
-        nav a.active {
-            background: #f9f9f9;
-            color: #666;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-
-        .songs-list,
-        .song,
-        .videos,
-        .videos > li {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        .songs-list {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: stretch;
-            justify-content: center;
-            padding: 20px 8px;
-            max-width: 1516px;
-            margin: 0 auto;
-        }
-
-        .song {
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .song-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #ffffff;
-            box-shadow: 0px 20px 20px -20px rgba(0, 0, 0, 0.2);
-        }
-
-        .name {
-            padding: 16px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .details {
-            flex: 1;
-            padding: 16px 16px 0;
-        }
-
-        .details > ul:not(:last-child) {
-            margin-bottom: 16px;
-        }
-
-        .details h4 {
-            margin-bottom: 8px;
-        }
-
-        .notes {
-            padding-left: 16px;
-        }
-
-        .notes li {
-            font-size: 14px;
-            color: #999;
-        }
-
-        .videos .button {
-            width: 100%;
-        }
-
-        .new-key {
-            text-align: center;
-            margin: 0;
-            padding: 20px 8px 0;
-        }
-
-        .videos .button.new::before,
-        .new-key::before {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: firebrick;
-            display: inline-block;
-            margin-right: 10px;
-            margin-top: -6px;
-            vertical-align: middle;
-        }
-        
-        .videos > li:not(:last-child) {
-            margin-bottom: 10px;
-        }
-
-        .main-action {
-            padding: 16px;
-        }
-
-        .main-action .button {
-            width: 100%;
-        }
-
-
-        .button,
-        button {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 17px;
-            display: inline-block;
-            color: #333;
-            text-decoration: none;
-            background: #5683a7;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 4px;
-            width: 96px;
-            text-align: right;
-            border: 1px solid #5683a7;
-            outline: 0;
-            text-align: center;
-        }
-
-        .button.secondary,
-        button.secondary {
-            background: none;
-            color: #5683a7;
-        }
-
-        .cta::after {
-            content: '\BB';
-            font-size: 20px;
-            line-height: 17px;
-        }
-
-        @media (min-width: 530px) {
-            .song {
-                width: 50%;
-            }
-        }
-
-        @media (min-width: 900px) {
-            .song {
-                width: 300px;
-            }
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>PL2 Primary Music</title>
+	<link rel="stylesheet" href="style.css?buster=7f4e7fa31e504e68a4f39ebe8055332f">
 </head>
 <body>
-    <header>
-        <h1>PL2 Primary Songs</h1>
-    </header>
-    <div id="songs"></div>
-    <script id="songs-template" type="text/x-handlebars">
-        <!-- <nav>
-            <a href="#2020" class="{{linkActive '2020' year}}">2020 Songs</a>
-        </nav> -->
-        {{#each sections}}
-            <h2>{{sectionTitle}} {{../year}}</h2>
-            <p class="new-key">New Video</p>
-            <ul class="songs-list">
-            {{#each songs}}
-                <li class="song">
-                    <div class="song-card">
-                        <h3 class="name">
-                            {{name}}
-                        </h3>
-                        <div class="details">
-                            {{#if videos}}
-                                <h4>Videos</h4>
-                                <ul class="videos">
-                                    {{#each videos}}
-                                        <li>
-                                            <a class="button secondary {{classNames}}" href="{{url}}" target="_blank">
-                                                {{display}}
-                                            </a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            {{/if}}
-                            {{#if notes}}
-                                <h4>Notes</h4>
-                                <ul class="notes">
-                                    {{#if verses}}
-                                        <li>Verses: {{verses}}</li>
-                                    {{/if}}
-                                    {{#each notes}}
-                                        <li>{{this}}</li>
-                                    {{/each}}
-                                </ul>
-                            {{/if}}
-                        </div>
-                        <div class="main-action">
-                            <a class="button cta" href="{{link this}}" target="_blank">
-                                {{mainAction.display}}
-                            </a>
-                        </div>
-                    </div>
-                </li>
-            {{/each}}
-            </ul>
-        {{/each}}
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.2.0/handlebars.min.js"></script>
-    <script>
-        (function() {
-            var data = {
-                '2020': [
-                    {
-                        sectionTitle: 'Program Songs',
-                        songs: [
-                            {
-                                name: 'The Iron Rod',
-                                mainAction: {
-                                    display: '#274',
-                                    path: 'music/library/hymns',
-                                },
-                                notes: [
-                                    'Verses 1 and 3',
-                                ],
-                                videos: [
-                                    {
-                                        display: 'Review with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=OH0IcNhmiwU',
-                                        classNames: '',
-                                    }
-                                ],
-                            },
-                            {
-                                name: 'Nephi\'s Courage',
-                                mainAction: {
-                                    display: 'Pg 120',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                                notes: [
-                                    'All three verses',
-                                ],
-                                videos: [
-                                    {
-                                        display: 'Review with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=rTUzoYHiqk4',
-                                        classNames: '',
-                                    }
-                                ],
-                            },
-                            {
-                                name: 'Dare to Do Right',
-                                mainAction: {
-                                    display: 'Pg 158',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                                notes: [
-                                    'First verse only'
-                                ],
-                                videos: [
-                                    {
-                                        display: 'Learn with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=-zByax0JuQM',
-                                        classNames: '',
-                                    },
-                                    {
-                                        display: 'Review with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=sEJoRvvbYDA',
-                                        classNames: 'new',
-                                    }
-                                ],
-                            },
-                            {
-                                name: 'Love One Another',
-                                mainAction: {
-                                    display: 'Pg 136',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                                videos: [
-                                    {
-                                        display: 'Learn with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=sWam9CwxkYA',
-                                        classNames: 'new',
-                                    },
-                                ],
-                                notes: [
-                                    'Sign Language'
-                                ]
-                            },
-                            {
-                                name: 'Peace in Christ',
-                                mainAction: {
-                                    display: 'Lyrics',
-                                    path: 'study/liahona/2018/01/youth',
-                                },
-                                videos: [
-                                    {
-                                        display: 'Learn with Bro. Baxter',
-                                        url: 'https://www.youtube.com/watch?v=Vhp4RVbcMC8',
-                                        classNames: 'new',
-                                    },
-                                    {
-                                        display: 'Official Video',
-                                        url: 'https://www.youtube.com/watch?v=R46J-GjbRWA',
-                                        classNames: '',
-                                    },
-                                    {
-                                        display: 'Sing Along (just piano)',
-                                        url: 'https://www.youtube.com/watch?v=qkFhRl7RRjU',
-                                        classNames: '',
-                                    }
-                                ],
-                            },
-                            {
-                                name: 'I Will Be Valiant',
-                                mainAction: {
-                                    display: 'Pg 162',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                            },
-                            {
-                                name: 'I Will Be What I Believe',
-                                mainAction: {
-                                    display: 'Lyrics',
-                                    href: 'https://www.musixmatch.com/lyrics/Blake-Gillette/I-Will-Be-What-I-Believe',
-                                },
-                                videos: [
-                                    {
-                                        display: 'Official Video',
-                                        url: 'https://www.youtube.com/watch?v=3PlyzaKkzTQ',
-                                        classNames: '',
-                                    },
-                                    {
-                                        display: 'Sing Along (just piano)',
-                                        url: 'https://www.youtube.com/watch?v=Qu2CWx8TpNE',
-                                        classNames: '',
-                                    }
-                                ],
-                            },
-                            {
-                                name: 'Faith',
-                                mainAction: {
-                                    display: 'Pg 96',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                                notes: [
-                                    'Both verses',
-                                ],
-                            },
-                            {
-                                name: 'A Child\'s Prayer',
-                                mainAction: {
-                                    display: 'Pg 12',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                            },
-                            {
-                                name: 'The Church of Jesus Christ',
-                                mainAction: {
-                                    display: 'Pg 77',
-                                    path: 'music/library/childrens-songbook',
-                                },
-                            },
-                        ]
-                    },
-                ]
-            };
+	<header>
+		<h1>PL2 Primary Songs</h1>
+	</header>
+	<div id="years"></div>
+	<div id="songs"></div>
 
-            Handlebars.registerHelper('link', function(song) {
-                if (song.mainAction) {
-                    if (song.mainAction.href) return song.mainAction.href;
+	<script id="nav-template" type="text/x-handlebars">
+		<nav>
+			{{#each years}}
+				<a href="#{{this}}" class="{{linkActive this ../year}}">{{this}} Songs</a>
+			{{/each}}
+		</nav>
+	</script>
 
-                    if (song.name && song.mainAction.path) {
-                        const domain = 'https://www.churchofjesuschrist.org';
-                        const kabobName = song.name
-                            .toLowerCase()
-                            .replace(/'/g, '')
-                            .replace(/,/g, '')
-                            .replace(/\s/g, '-');
-                        return `${domain}/${song.mainAction.path}/${song.kabobName || kabobName}?lang=eng`;
-                    }
-                }
-                return '#';
-            });
+	<script id="songs-template" type="text/x-handlebars">
+		{{#each sections}}
+			<h2>{{sectionTitle}} {{../year}}</h2>
+			<p class="new-key">New Video</p>
+			<ul class="songs-list">
+			{{#each songs}}
+				<li class="song">
+					<div class="song-card">
+						<h3 class="name">
+							{{name}}
+						</h3>
+						<div class="details">
+							{{#if videos}}
+								<h4>Videos</h4>
+								<ul class="videos">
+									{{#each videos}}
+										<li>
+											<a class="button secondary {{classNames}}" href="{{url}}" target="_blank">
+												{{display}}
+											</a>
+										</li>
+									{{/each}}
+								</ul>
+							{{/if}}
+							{{#if notes}}
+								<h4>Notes</h4>
+								<ul class="notes">
+									{{#if verses}}
+										<li>Verses: {{verses}}</li>
+									{{/if}}
+									{{#each notes}}
+										<li>{{this}}</li>
+									{{/each}}
+								</ul>
+							{{/if}}
+						</div>
+						<div class="main-action">
+							<a class="button cta" href="{{link this}}" target="_blank">
+								{{mainAction.display}}
+							</a>
+						</div>
+					</div>
+				</li>
+			{{/each}}
+			</ul>
+		{{/each}}
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.2.0/handlebars.min.js"></script>
+	<script>
+		(function() {
+			let data = {};
+			let years = [];
 
-            Handlebars.registerHelper('linkActive', function(linkYear, currentYear) {
-                return linkYear === currentYear ? 'active' : '';
-            });
+			Handlebars.registerHelper('link', (song) => {
+				if (song.mainAction) {
+					if (song.mainAction.href) return song.mainAction.href;
 
-            var el = document.getElementById('songs');
-            var template = Handlebars.compile(document.getElementById('songs-template').innerHTML);
+					if (song.name && song.mainAction.path) {
+						const domain = 'https://www.churchofjesuschrist.org';
+						const kabobName = song.name
+							.toLowerCase()
+							.replace(/'/g, '')
+							.replace(/,/g, '')
+							.replace(/\s/g, '-');
+						return `${domain}/${song.mainAction.path}/${song.kabobName || kabobName}?lang=eng`;
+					}
+				}
+				return '#';
+			});
 
-            function router() {
-                var year = '2020';
-                if (window.location.hash) {
-                    year = window.location.hash.substr(1);
-                }
-                el.innerHTML = template({
-                    year: year,
-                    sections: data[year],
-                });
-            }
+			Handlebars.registerHelper('linkActive', (linkYear, currentYear) => linkYear === currentYear ? 'active' : '');
 
-            router();
-            window.onhashchange = router;
-        })();
-    </script>
+			var yearsEl = document.getElementById('years');
+			var songsEl = document.getElementById('songs');
+			const songsTemplate = Handlebars.compile(document.getElementById('songs-template').innerHTML);
+			const navTemplate = Handlebars.compile(document.getElementById('nav-template').innerHTML);
+
+			function router() {
+				var year = years.length ? years[0] : '';
+				if (window.location.hash) {
+					year = window.location.hash.substr(1);
+				}
+				yearsEl.innerHTML = years.length < 2 ? '' : navTemplate({year, years});
+				songsEl.innerHTML = songsTemplate({year, sections: data[year]});
+			}
+
+			fetch('songs.json?buster=516ad1d2884949a3a2ebd02972f65e79')
+				.then(resp => resp.json())
+				.then(respData => {
+					years = Object.keys(respData);
+					data = respData;
+					router();
+					window.onhashchange = router;
+				});
+		})();
+	</script>
 </body>
 </html>
