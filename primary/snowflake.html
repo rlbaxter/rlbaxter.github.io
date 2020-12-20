@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle a Snowflake</title>
+    <style>
+        body {
+            background: lightblue;
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        button {
+            margin: 0 15px;
+        }
+
+        .snowflake {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            position: relative;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .snowflake::before,
+        .snowflake::after {
+            content: '';
+            display: block;
+            height: 300px;
+            width: 1px;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 150px;
+            z-index: -1;
+        }
+
+        .snowflake::after {
+            transform: rotate(90deg);
+        }
+
+        canvas {
+            border-radius: 50%;
+        }
+
+        #images {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        #images img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Doodle a Snowflake</h1>
+    <p>
+        Every snowflake's different and so is every child. We're grateful for you and your own special gifts.
+    </p>
+    <div class="controls">
+        <button onclick="snowflake.capture()" title="Capture">📷</button>
+        <label for="line-width" title="Line Width">✏️</label>
+        <input type="range" id="line-width" name="line-with" value="5" min="1" max="20" onchange="snowflake.changeLineWidth(this.value)">
+        <button onclick="snowflake.clear()" title="Clear">🗑️</button>
+    </div>
+    <div class="snowflake">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="images">
+        <p>Captured snowflakes are images. You can right click and save!</p>
+    </div>
+    <script>
+        const snowflake = (() => {
+            const canvas = document.getElementById('canvas');
+            const images = document.getElementById('images');
+            const ctx = canvas.getContext("2d");
+            const w = canvas.width = 300, h = canvas.height = 300;
+            const cx = w/2, cy = h/2;
+            let x = null, y = null, lineWidth = 5, drawing = false;
+
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#ffffff';
+
+            const ix = (x) => x+((x-cx)*-2); // point on the mirror side of x axis
+            const rp = (x, y, d) => { // rotate a point around the center
+                const tx=x-cx, ty=y-cy, r=(Math.PI/180)*d;
+                return {
+                    x: cx+((tx*Math.cos(r))-(ty*Math.sin(r))),
+                    y: cy+((ty*Math.cos(r))+(tx*Math.sin(r))),
+                };
+            };
+
+            // top 2 points of our top triangle section
+            const top1 = rp(cx, h*-1, 30);
+            const top2 = rp(cx, h*-1, -30);
+
+            // Determine if a point is in the triangle of the top 6th pizza slice
+            // I stole this math from an answer here:
+            // https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
+            const inTop = (x, y) => {
+                const dX = x-top2.x;
+                const dY = y-top2.y;
+                const dX21 = top2.x-top1.x;
+                const dY12 = top1.y-top2.y;
+                const D = dY12*(cx-top2.x) + dX21*(cy-top2.y);
+                const s = dY12*dX + dX21*dY;
+                const t = (top2.y-cy)*dX + (cx-top2.x)*dY;
+                if (D<0) return s<=0 && t<=0 && s+t>=D;
+                return s>=0 && t>=0 && s+t<=D;
+            };
+
+            const clear = () => {
+                ctx.clearRect(0, 0, w, h);
+            };
+
+            const draw = (e) => {
+                e.preventDefault();
+                if (!drawing) return;
+                let clx, cly, itp, itnp;
+                if (e.targetTouches) {
+                    clx = e.targetTouches[0].clientX;
+                    cly = e.targetTouches[0].clientY;
+                } else {
+                    clx = e.clientX;
+                    cly = e.clientY;
+                }
+                const bcr = canvas.getBoundingClientRect();
+                const nx = clx - bcr.left;
+                const ny = cly - bcr.top;
+                x = x === null ? nx : x;
+                y = y === null ? ny : y;
+
+                ctx.lineWidth = lineWidth;
+
+                // duplicate the point every 60deg
+                for (let i = 0; i < 360; i += 60) {
+                    const p = rp(x, y, i);
+                    const np = rp(nx, ny, i);
+
+                    // This is in the top 6th.
+                    // get the point on the other side of the x axis
+                    if (inTop(np.x, np.y)) {
+                        itp = {x: ix(p.x), y: p.y};
+                        itnp = {x: ix(np.x), y: np.y};
+                    }
+
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(np.x, np.y);
+                    ctx.stroke();
+                }
+
+                // duplicate the mirrored point every 60deg
+                if (itp && itnp) {
+                    for (let i = 0; i < 360; i += 60) {
+                        const p = rp(itp.x, itp.y, i);
+                        const np = rp(itnp.x, itnp.y, i);
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(np.x, np.y);
+                        ctx.stroke();
+                    }
+                }
+
+                x = nx;
+                y = ny;
+            };
+
+            const start = (e) => {
+                e.preventDefault();
+                drawing = true;
+                draw(e);
+            };
+
+            const end = (e) => {
+                e.preventDefault();
+                drawing = false;
+                x = null;
+                y = null;
+            };
+
+            canvas.addEventListener('mousedown', start);
+            canvas.addEventListener('mouseup', end);
+            canvas.addEventListener('mouseleave', end);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('touchstart', start, false);
+            canvas.addEventListener('touchend', end, false);
+            canvas.addEventListener('touchmove', draw, false);
+
+            clear();
+
+            return {
+                clear,
+                changeLineWidth(val) {
+                    lineWidth = val;
+                },
+                capture() {
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL();
+                    images.appendChild(img);
+                },
+            };
+        })();
+    </script>
+</body>
+</html>

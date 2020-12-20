@@ -1,8 +1,21 @@
 {
     "2020": [
         {
-            "sectionTitle": "Program Songs",
+            "sectionTitle": "Music",
             "songs": [
+                {
+                    "name": "December Singing Time",
+                    "notes": [
+                        "You can find the snowflake activity <a href=\"snowflake.html\">here</a>."
+                    ],
+                    "videos": [
+                        {
+                            "display": "Singing Time",
+                            "url": "https://youtu.be/Fc9xQnQFvck",
+                            "classNames": "new"
+                        }
+                    ]
+                },
                 {
                     "name": "The Iron Rod",
                     "mainAction": {
@@ -69,7 +82,7 @@
 						{
                             "display": "Review with Bro. Baxter",
                             "url": "https://www.youtube.com/watch?v=iNJ8LuZP1_4",
-                            "classNames": "new"
+                            "classNames": ""
                         },
                         {
                             "display": "Learn with Bro. Baxter",
@@ -91,7 +104,7 @@
 						{
                             "display": "Review with Bro. Baxter",
                             "url": "https://www.youtube.com/watch?v=Ct8ypXcFb4Y",
-                            "classNames": "new"
+                            "classNames": ""
                         },
                         {
                             "display": "Learn with Bro. Baxter",
@@ -109,56 +122,6 @@
                             "classNames": ""
                         }
                     ]
-                },
-                {
-                    "name": "I Will Be Valiant",
-                    "mainAction": {
-                        "display": "Pg 162",
-                        "path": "music/library/childrens-songbook"
-                    }
-                },
-                {
-                    "name": "I Will Be What I Believe",
-                    "mainAction": {
-                        "display": "Lyrics",
-                        "href": "https://www.musixmatch.com/lyrics/Blake-Gillette/I-Will-Be-What-I-Believe"
-                    },
-                    "videos": [
-                        {
-                            "display": "Official Video",
-                            "url": "https://www.youtube.com/watch?v=3PlyzaKkzTQ",
-                            "classNames": ""
-                        },
-                        {
-                            "display": "Sing Along (just piano)",
-                            "url": "https://www.youtube.com/watch?v=Qu2CWx8TpNE",
-                            "classNames": ""
-                        }
-                    ]
-                },
-                {
-                    "name": "Faith",
-                    "mainAction": {
-                        "display": "Pg 96",
-                        "path": "music/library/childrens-songbook"
-                    },
-                    "notes": [
-                        "Both verses"
-                    ]
-                },
-                {
-                    "name": "A Child\"s Prayer",
-                    "mainAction": {
-                        "display": "Pg 12",
-                        "path": "music/library/childrens-songbook"
-                    }
-                },
-                {
-                    "name": "The Church of Jesus Christ",
-                    "mainAction": {
-                        "display": "Pg 77",
-                        "path": "music/library/childrens-songbook"
-                    }
                 }
             ]
         }

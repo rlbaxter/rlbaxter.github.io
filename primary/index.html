@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>PL2 Primary Music</title>
-	<link rel="stylesheet" href="style.css?buster=7f4e7fa31e504e68a4f39ebe8055332f">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<header>
@@ -53,15 +53,17 @@
 										<li>Verses: {{verses}}</li>
 									{{/if}}
 									{{#each notes}}
-										<li>{{this}}</li>
+										<li>{{{this}}}</li>
 									{{/each}}
 								</ul>
 							{{/if}}
 						</div>
 						<div class="main-action">
-							<a class="button cta" href="{{link this}}" target="_blank">
-								{{mainAction.display}}
-							</a>
+							{{#if mainAction}}
+								<a class="button cta" href="{{link this}}" target="_blank">
+									{{mainAction.display}}
+								</a>
+							{{/if}}
 						</div>
 					</div>
 				</li>
@@ -108,7 +110,7 @@
 				songsEl.innerHTML = songsTemplate({year, sections: data[year]});
 			}
 
-			fetch('songs.json?buster=516ad1d2884949a3a2ebd02972f65e79')
+			fetch('songs.json')
 				.then(resp => resp.json())
 				.then(respData => {
 					years = Object.keys(respData);
