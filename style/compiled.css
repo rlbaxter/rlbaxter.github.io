@@ -1,19 +1,4 @@
-/* FONTS */
-@font-face {
-	font-family: 'opensans';
-	src: url('/fonts/OpenSans-Light-webfont.eot');
-	src: url('/fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'), url('/fonts/OpenSans-Light-webfont.woff') format('woff'), url('/fonts/OpenSans-Light-webfont.ttf') format('truetype'), url('/fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
-	font-weight: 400;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'opensans';
-	src: url('/fonts/OpenSans-Regular-webfont.eot');
-	src: url('/fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'), url('/fonts/OpenSans-Regular-webfont.woff') format('woff'), url('/fonts/OpenSans-Regular-webfont.ttf') format('truetype'), url('/fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
-	font-weight: 600;
-	font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
 
 /* GLOBAL DEFAULTS */
 *,
@@ -33,7 +18,7 @@ body {
 
 /* TYPOGRAPHY */
 body {
-	font: 400 medium 'opensans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+	font: 300 medium 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 	color: #c5c8c6;
 	line-height: 1.8;
 }
@@ -44,19 +29,19 @@ h3,
 h4,
 h5,
 h6 {
-	font-weight: 600;
+	font-weight: 400;
 	font-weight: normal;
 	line-height: 1.4;
 	margin: 0;
 }
 
 .subheader {
-	font-weight: 400;
+	font-weight: 300;
 	color: #969896;
 }
 
 strong {
-	font-weight: 600;
+	font-weight: 400;
 }
 
 h1 { font-size: 240%; }
