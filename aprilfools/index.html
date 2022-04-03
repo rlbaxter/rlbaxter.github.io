@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>April Fools!</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header><h1>April Fools!</h1></header>
+	<main><section id="post"></section></main>
+	<script>
+		const af = (function() {
+			const data = {
+				2022: 'If you know me, you know how obsessed I am with Baby Shark. Well, 6 months ago, that passion turned into something exciting. One of my Baby Shark dance videos went viral on TikTok, and the next day I found an email in my inbox from the director of "Baby Shark! The Musical". He told me they were currently casting for this new musical. He had seen my video and encouraged me to officially audition for the role of Daddy Shark. I took him up on that and got the role! The last few months have been challenging with rehearsals and constant revisions to the script, music, and choreography, but it\'s been a blast. We just wrapped up our limited trial performances, and the feedback has been overwhelming positive. It won\'t be too much longer now until you\'ll be able see this production in all the glitter and glamour that Broadway has to offer.',
+				2021: 'These will be making a limited run in a grocery store near you, so I guess I can no longer keep this a secret. I’m going to be an Olympian. I was selected to represent the U.S. in the new event of “Cat Herding” for the 2020 Olympic Games in Tokyo all the way back at the end of 2019. After a few months of training with the team, the pandemic hit, and my chances for gold vanished. The games are back on now though, the team is back to training, and General Mills approached me about appearing on the Wheaties box. It is my hope that the games do indeed proceed as planned, and that you all enjoy buying a box of cereal with my face on it.',
+				2020: 'Fun fact. I was hired as a background extra for the fourth season of Stranger Things. After we shot all the footage for the trailer, I was fired for "Waving at the camera" and "Looking way too happy to be a Soviet work camp prisoner." They also edited me out completely. I don\'t think I did anything wrong, but that\'s show business for you.',
+				2019: 'I had an interesting chat with an older gentleman recently while on a trip to London. We both had an interest in trains and talked about them for a few hours. It turns out he was the creator of "Thomas the Tank Engine" and he thought it would be fun to give me a cameo appearance in an episode of "Thomas & Friends". I returned home and had forgotten all about it, but I just got an email from the show\'s creative department with some concept art for "Baxter the Loco Locomotive". I\'m beside myself, giddy with anticipation for when Baxter makes it into an episode. I\'ll keep you all informed when I get more details.',
+				2018: 'A while back I was having a conversation with some people at a social gathering. Wanting to impress them, I started to share my knowledge of various musical instruments. As we were talking the conversation turned to “The Nose Flute”. The group seemed to be fascinated as I told them about the different varieties of instruments played with the nose, and the cultural uses they have served throughout history. It turns out that one of the people I was speaking with was the Director of the Music at Utah Valley University. He contacted me shortly after this encounter with a proposal. He agreed with me that the nose flute still has a place in modern society and requested I teach a course on it in the Fall 2018 semester. He suggested I write my own textbook for the course. After a few months of hard work, the book is finished and the course is approved and official. I can’t wait until the first day of the fall semester!',
+				2017: 'I\'ve always wanted to join a band, and recently decided that I just needed to make it happen. I auditioned with what seemed like hundreds of different bands from rock, to bluegrass, to punk, to string quartet. After getting rejection after rejection, I almost lost hope. Right as I was about to call it quits, I got a call from the mariachi band "Los Bad Hombres" asking me to join them. This musical genre was not really my first pick, but I emphatically accepted. I\'m in a band now, and I feel like a rock star.',
+				2016: 'It\'s always been a dream of mine to be a mascot. The jumping, the dancing, and the goofiness make being a mascot my dream job. I\'m happy to announce that after being on the official MLB mascot wait list for the past 5 seasons, I was offered a spot to be "Lou Seal" for the San Fransisco Giants this coming baseball season. Can\'t wait for the first game!',
+				2015: 'After six months of intensive physical and mental training, I am happy to announce my trip to the international space station is a little closer. I will be heading up on a Chinese rocket later next month on a two month mission installing a new transmission receiving dish I helped design. Can\'t wait for launch day.',
+				2014: 'Hip-Hop\'s not normally my thang, but when a producer overhears you laying it down tight and offers you a blingin\' record contract, aint nobody gonna say no to dat. Check out my tracks in \'Big Time\' hittin\' iTunes and stuff next weekend.',
+				2013: 'So glad I can finally talk about this. For the past six months I\'ve been filming a new reality show for SCN about 10 twenty-somethings living in the same house... with a mountain goat. I\'ve been under a strict order of silence until now, and the show premieres tomorrow. I can\'t tell you how far I got in the competition yet, you\'ll just have to watch "Bleating Hearts" Tuesdays at 8:00pm on SCN.',
+			};
+			const render = (year) => {
+				const prev = data[year-1] ? `<button onclick="af.render(${year-1})">${year-1}</button>`: '';
+				const next = data[year+1] ? `<button onclick="af.render(${year+1})">${year+1}</button>`: '';
+				document.getElementById('post').innerHTML = /*html*/`
+					<nav>${prev}<h2>${year}</h2>${next}</nav>
+					<article>
+						<p>${data[year]}</p>
+						<p class="post-img">
+							<img alt="April Fools ${year}" src="${year}.jpg">
+						</p>
+					</article>
+				`;
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			};
+			return { render };
+		})();
+		af.render(2022);
+	</script>
+</body>
+</html>
