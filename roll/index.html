@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roll Call</title>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #peopleList,
+        #peopleList li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #peopleList li {
+            padding: 16px;
+            border-top: 1px solid #AAA;
+            font-size: 20px;
+            display: flex;
+        }
+
+        #peopleList li:nth-child(even) {
+            background: #f6f6f6;
+        }
+
+        #peopleList .name {
+            flex: 1;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <form id="setPeople">
+        <p>Enter a list of people (Last Name, First Name) with each person on their own line.</p>
+        <textarea name="people"></textarea>
+        <button>Submit</button>
+    </form>
+    <button onclick="rollCall.clearAttendance('all')">Clear All Attendance</button>
+    <button onclick="rollCall.clearPeople()">Clear All People</button>
+    <ul id="peopleList"></ul>
+    <ul id="attendance"></ul>
+</div>
+<script>
+    const rollCall = (() => {
+        const now = new Date();
+        const zeroPad = (num) => num < 10 ? `0${num}` : `${num}`;
+        const today = `${now.getFullYear()}-${zeroPad(now.getMonth() + 1)}-${zeroPad(now.getDate())}`;
+        let peopleList = [];
+        let attendanceByDay = {};
+        const elementIds = ['setPeople', 'peopleList', 'attendance'];
+        const elements = {};
+
+        // Local storage helpers
+        const lsGet = (k) => JSON.parse(localStorage.getItem(k));
+        const lsSet = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+        const lsDel = (k) => localStorage.removeItem(k);
+
+        function renderList() {
+            if (!elements?.peopleList) return;
+            const attendanceToday = attendanceByDay[today] || [];
+            elements.peopleList.innerHTML = peopleList
+                .filter(i => attendanceToday.indexOf(i) < 0)
+                .map(i => (
+                    `<li>
+                        <span class="name">${i}</span>
+                        <button data-name="${i}" onclick="rollCall.markHere(this)">I'm here</button>
+                    </li>`
+                )).join('');
+            if (!elements?.attendance) return;
+            elements.attendance.innerHTML = Object.keys(attendanceByDay)
+                .sort((a, b) => new Date(b) - new Date(a))
+                .map(day => (
+                    `<li>
+                        ${day} <button onclick="rollCall.clearAttendance('${day}')">Clear</button>
+                        <ul>${attendanceByDay[day].map(i => `<li>${i}</li>`).join('')}</ul>
+                    </li>`
+                )).join('');
+        }
+        function onSetPeople(e) {
+            e.preventDefault();
+            peopleList = e?.target?.querySelector('textarea')?.value?.split('\n') || [];
+            lsSet('people', peopleList);
+            renderList();
+        }
+        function init() {
+            elementIds.forEach(e => elements[e] = document.getElementById(e));
+            peopleList = lsGet('people') || [];
+            attendanceByDay = lsGet('attendance') || {};
+            renderList();
+            elements?.setPeople?.addEventListener('submit', onSetPeople);
+        }
+        function clearAttendance(date) {
+            if (date === 'all') {
+                attendanceByDay = {};
+            } else {
+                delete attendanceByDay[date];
+            }
+            lsSet('attendance', attendanceByDay);
+            renderList();
+        }
+        function clearPeople() {
+            peopleList = [];
+            lsSet('people', peopleList);
+            renderList();
+        }
+        function markHere(buttonEl) {
+            const name = buttonEl?.dataset?.name;
+            if (!name) return;
+            buttonEl.textContent = 'Glad you\'re here';
+            buttonEl.setAttribute('disabled', '');
+            attendanceByDay[today] = [
+                ...attendanceByDay[today] || [],
+                name,
+            ].filter((name, idx, list) => list.indexOf(name) === idx)
+             .sort((a, b) => a - b);
+            
+            lsSet('attendance', attendanceByDay);
+            setTimeout(() => {
+                renderList();
+            }, 2000)
+        }
+        return {
+            init,
+            markHere,
+            clearPeople,
+            clearAttendance,
+        }
+    })();
+    document.addEventListener("DOMContentLoaded", rollCall.init);
+</script>
+</body>
+</html>
