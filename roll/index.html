@@ -6,59 +6,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roll Call</title>
     <style>
-        html {
-            font-family: sans-serif;
+        :root {
+            --primary-color: skyblue;
+            --ui-color-stronger: #333;
+            --ui-color-strong: #666;
+            --ui-color: #aaa;
+            --ui-color-weak: #f6f6f6;
+            --ui-color-weaker: white;
         }
+        html {
+            box-sizing: border-box;
+            font-family: sans-serif;
+            line-height: 1.25;
+            font-size: 16px;
+            background: var(--ui-color-weaker);
+            color: var(--ui-color-stronger);
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
         html,
         body {
             margin: 0;
             padding: 0;
         }
 
-        #peopleList,
-        #peopleList li {
+        h1 {
+            font-size: 25px;
+            padding: 0 16px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        button {
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+        }
+
+        button,
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: var(--ui-color-weaker);
+            border: 1px solid var(--primary-color);
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        button[disabled],
+        .button[disabled] {
+            border-color: var(--ui-color);
+            color: var(--ui-color-strong);
+            background: transparent;
+            opacity: 1;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        ul,
+        ul li {
             margin: 0;
             padding: 0;
             list-style: none;
         }
 
-        #peopleList li {
+        form {
             padding: 16px;
-            border-top: 1px solid #AAA;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+        }
+
+        .people-list {
+            border-bottom: 1px solid var(--ui-color);
+        }
+
+        .people-list li {
+            padding: 10px 16px;
+            border-top: 1px solid var(--ui-color);
             font-size: 20px;
             display: flex;
+            align-items: center;
         }
 
-        #peopleList li:nth-child(even) {
-            background: #f6f6f6;
+        .people-list li:nth-child(even) {
+            background: var(--ui-color-weak);
         }
 
-        #peopleList .name {
+        .people-list .name {
             flex: 1;
         }
 
+        .people-list .here .name {
+            color: var(--ui-color-strong);
+        }
+
+        .letter-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            grid-auto-columns: auto;
+            padding: 16px;
+        }
+
+        .letter-links li {
+            width: 40px;
+            flex: none;
+        }
+
+        .letter-links .button {
+            text-transform: uppercase;
+            width: 100%;
+            padding: 7px;
+        }
+
+        .actions {
+            padding: 16px;
+        }
+
+        .attendance {
+            margin-bottom: 16px;
+        }
+
+        .attendance header {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .attendance h2 {
+            flex: 1;
+        }
+
+        .attendance ul {
+            border-bottom: 1px solid var(--ui-color);
+        }
+
+        .attendance li {
+            padding: 2px 16px;
+            border-top: 1px solid var(--ui-color);
+        }
+
+        .attendance li:nth-child(even) {
+            background: var(--ui-color-weak);
+        }
     </style>
 </head>
 <body>
-<div id="app">
-    <form id="setPeople">
-        <p>Enter a list of people (Last Name, First Name) with each person on their own line.</p>
-        <textarea name="people"></textarea>
-        <button>Submit</button>
-    </form>
-    <button onclick="rollCall.clearAttendance('all')">Clear All Attendance</button>
-    <button onclick="rollCall.clearPeople()">Clear All People</button>
-    <ul id="peopleList"></ul>
-    <ul id="attendance"></ul>
-</div>
+<div id="app"></div>
 <script>
     const rollCall = (() => {
-        const now = new Date();
-        const zeroPad = (num) => num < 10 ? `0${num}` : `${num}`;
-        const today = `${now.getFullYear()}-${zeroPad(now.getMonth() + 1)}-${zeroPad(now.getDate())}`;
         let peopleList = [];
         let attendanceByDay = {};
-        const elementIds = ['setPeople', 'peopleList', 'attendance'];
+        const elementIds = ['app'];
         const elements = {};
 
         // Local storage helpers
@@ -66,40 +179,103 @@
         const lsSet = (k, v) => localStorage.setItem(k, JSON.stringify(v));
         const lsDel = (k) => localStorage.removeItem(k);
 
-        function renderList() {
-            if (!elements?.peopleList) return;
-            const attendanceToday = attendanceByDay[today] || [];
-            elements.peopleList.innerHTML = peopleList
-                .filter(i => attendanceToday.indexOf(i) < 0)
-                .map(i => (
+        const alphaSort = (a, b) => a.localeCompare(b);
+        const dateSort = (a, b) => new Date(b) - new Date(a);
+        const unique = (val, idx, list) => list.indexOf(val) === idx;
+
+        function getToday() {
+            const now = new Date();
+            const zeroPad = (num) => num < 10 ? `0${num}` : `${num}`;
+            return `${now.getFullYear()}-${zeroPad(now.getMonth() + 1)}-${zeroPad(now.getDate())}`;
+        }
+
+        function render(html) {
+            if (!elements.app) return;
+            elements.app.innerHTML = html;
+            scroll(0, 0);
+        }
+
+        const pages = {
+            home() {
+                render(`
+                    <h1>Roll Call</h1>
+                    <p class="actions">
+                        <a class="button" href="#list/a">Take Roll</a>
+                        <a class="button" href="#manage">Manage People</a>
+                        <a class="button" href="#attendance">Attendance</a>
+                    </p>
+                `);
+            },
+            list(filter) {
+                const letters = peopleList.map(i => i[0].toLowerCase()).filter(unique);
+                const links = letters.map(letter => (
                     `<li>
-                        <span class="name">${i}</span>
-                        <button data-name="${i}" onclick="rollCall.markHere(this)">I'm here</button>
+                        <a class="button" href="#list/${letter}" ${filter === letter ? 'disabled' : ''}>
+                            ${letter}
+                        </a>
                     </li>`
                 )).join('');
-            if (!elements?.attendance) return;
-            elements.attendance.innerHTML = Object.keys(attendanceByDay)
-                .sort((a, b) => new Date(b) - new Date(a))
-                .map(day => (
-                    `<li>
-                        ${day} <button onclick="rollCall.clearAttendance('${day}')">Clear</button>
-                        <ul>${attendanceByDay[day].map(i => `<li>${i}</li>`).join('')}</ul>
-                    </li>`
-                )).join('');
+                const attendanceToday = attendanceByDay[getToday()] || [];
+                const people = peopleList
+                    .filter(i => filter === 'all' || i.toLowerCase().startsWith(filter))
+                    .map(i => {
+                        const attending = attendanceToday.indexOf(i) > -1;
+                        return `<li ${attending ? 'class="here"' : ''}>
+                            <span class="name">${i}</span>
+                            <button data-name="${i}" onclick="rollCall.markHere(this)" ${attending ? 'disabled' : ''}>
+                                ${attending ? '✓ Here' : 'I\'m here'}
+                            </button>
+                        </li>`
+                    }).join('');
+                render(`
+                    <ul class="letter-links">${links}</ul>
+                    <ul class="people-list">${people}</ul>
+                    <ul class="letter-links">${links}</ul>
+                    <p class="actions"><a class="button" href="#">Done taking roll</a></p>
+                `);
+            },
+            manage() {
+                render(`
+                    <h1>Manage People</h1>
+                    <form id="setPeople">
+                        <p>Enter a list of people (Last Name, First Name) with each person on their own line.</p>
+                        <textarea name="people">${peopleList.join('\n')}</textarea>
+                        <p><button>Submit</button></p>
+                    </form>
+                    <p class="actions"><a class="button" href="#">Back</a></p>
+                `);
+                document.forms.setPeople?.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const textarea = e?.target?.querySelector('textarea');
+                    if (!textarea) return;
+                    peopleList = textarea.value?.split('\n')?.filter(i => !!i)?.filter(unique)?.sort(alphaSort) || [];
+                    textarea.value = peopleList.join('\n');
+                    lsSet('people', peopleList);
+                });
+            },
+            attendance() {
+                const attendance = Object.keys(attendanceByDay)
+                    .sort(dateSort)
+                    .map(day => (
+                        `<section class="attendance">
+                            <header>
+                                <h2>${day}</h2>
+                                <button onclick="rollCall.clearAttendance('${day}')">Clear</button>
+                            </header>
+                            <ul>${attendanceByDay[day].map(i => `<li>${i}</li>`).join('')}</ul>
+                        </section>`
+                    )).join('');
+                render(`
+                    <h1>Attendance</h1>
+                    <p class="actions">
+                        <button onclick="rollCall.clearAttendance('all')">Clear All Attendance</button>
+                    </p>
+                    ${attendance}
+                    <p class="actions"><a class="button" href="#">Back</a></p>
+                `);
+            },
         }
-        function onSetPeople(e) {
-            e.preventDefault();
-            peopleList = e?.target?.querySelector('textarea')?.value?.split('\n') || [];
-            lsSet('people', peopleList);
-            renderList();
-        }
-        function init() {
-            elementIds.forEach(e => elements[e] = document.getElementById(e));
-            peopleList = lsGet('people') || [];
-            attendanceByDay = lsGet('attendance') || {};
-            renderList();
-            elements?.setPeople?.addEventListener('submit', onSetPeople);
-        }
+
         function clearAttendance(date) {
             if (date === 'all') {
                 attendanceByDay = {};
@@ -107,33 +283,44 @@
                 delete attendanceByDay[date];
             }
             lsSet('attendance', attendanceByDay);
-            renderList();
+            router();
         }
-        function clearPeople() {
-            peopleList = [];
-            lsSet('people', peopleList);
-            renderList();
-        }
+
         function markHere(buttonEl) {
             const name = buttonEl?.dataset?.name;
             if (!name) return;
             buttonEl.textContent = 'Glad you\'re here';
             buttonEl.setAttribute('disabled', '');
+            const today = getToday();
             attendanceByDay[today] = [
                 ...attendanceByDay[today] || [],
                 name,
-            ].filter((name, idx, list) => list.indexOf(name) === idx)
-             .sort((a, b) => a - b);
+            ].filter(unique).sort(alphaSort);
             
             lsSet('attendance', attendanceByDay);
             setTimeout(() => {
-                renderList();
-            }, 2000)
+                buttonEl.textContent = '✓ Here';
+            }, 1000)
         }
+
+        function router(e) {
+            e?.preventDefault();
+            const props = location.hash?.substring(1)?.split('/');
+            const page = props?.shift() || 'home';
+            if (pages[page]) pages[page](...props);
+        }
+
+        function init() {
+            elementIds.forEach(e => elements[e] = document.getElementById(e));
+            peopleList = lsGet('people') || [];
+            attendanceByDay = lsGet('attendance') || {};
+            router();
+            onhashchange = router;
+        }
+
         return {
             init,
             markHere,
-            clearPeople,
             clearAttendance,
         }
     })();
