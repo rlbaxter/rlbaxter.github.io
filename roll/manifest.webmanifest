@@ -1,7 +1,6 @@
 {
-    "theme_color": "skyblue",
-    "background_color": "white",
-    "display": "standalone",
+    "background_color": "deepskyblue",
+    "display": "fullscreen",
     "scope": "/roll",
     "start_url": "/roll",
     "name": "Roll Call",
