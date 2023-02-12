@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.webmanifest" />
     <title>Roll Call</title>
     <style>
         :root {
@@ -44,6 +45,19 @@
             font-size: 22px;
         }
 
+        h3 {
+            font-size: 19px;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         button {
             appearance: none;
             -webkit-appearance: none;
@@ -74,6 +88,10 @@
             cursor: not-allowed;
         }
 
+        .button:hover {
+            text-decoration: none;
+        }
+
         ul,
         ul li {
             margin: 0;
@@ -88,6 +106,34 @@
         textarea {
             width: 100%;
             min-height: 300px;
+        }
+
+        .modal {
+            position: fixed;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow-x: auto;
+            background: #00000080;
+            padding: 16px;
+        }
+
+        .modal-block {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            background: var(--ui-color-weaker);
+            border-radius: 4px;
+        }
+
+        .modal-ctas {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .people-list {
@@ -123,14 +169,34 @@
         }
 
         .letter-links li {
-            width: 40px;
+            display: inline-block;
             flex: none;
         }
 
         .letter-links .button {
-            text-transform: uppercase;
-            width: 100%;
             padding: 7px;
+        }
+
+        .letter-links .letter {
+            text-transform: uppercase;
+            width: 40px;
+        }
+
+        .letter-links .letter:not([disabled]) {
+            background: transparent;
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+
+        .letter-links .visitor {
+            background: var(--ui-color-weak);
+            color: var(--ui-color-strong);
+            border-color: var(--ui-color);
+            padding: 7px 12px;
+        }
+
+        #gender-buttons button {
+            margin-bottom: 8px;
         }
 
         .actions {
@@ -167,6 +233,11 @@
         .attendance li:nth-child(even) {
             background: var(--ui-color-weak);
         }
+
+        .attendance h3,
+        .attendance .visitor-counts {
+            padding: 0 16px;
+        }
     </style>
 </head>
 <body>
@@ -175,8 +246,25 @@
     const rollCall = (() => {
         let peopleList = [];
         let attendanceByDay = {};
+        let visitorsByDay = {};
         const elementIds = ['app'];
         const elements = {};
+
+        function escapeHtml(s){
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(s));
+            return p.innerHTML;
+        }
+
+        function html(literals, ...substs) {
+            return literals.raw.reduce((acc, lit, i) => {
+                let subst = substs[i - 1];
+                if (Array.isArray(subst)) subst = subst.join('');
+                else if (literals.raw[i - 1] && literals.raw[i - 1].endsWith("$")) acc = acc.slice(0, -1);
+                else subst = escapeHtml(subst);
+                return acc + subst + lit;
+            });
+        }
 
         // Local storage helpers
         const lsGet = (k) => JSON.parse(localStorage.getItem(k));
@@ -193,15 +281,17 @@
             return `${now.getFullYear()}-${zeroPad(now.getMonth() + 1)}-${zeroPad(now.getDate())}`;
         }
 
-        function render(html) {
+        function render(toRender) {
             if (!elements.app) return;
-            elements.app.innerHTML = html;
+            elements.app.innerHTML = toRender;
             scroll(0, 0);
         }
 
         const pages = {
+
+            // PAGE: Home Page With Admin Links
             home() {
-                render(`
+                render(html`
                     <h1>Roll Call</h1>
                     <p class="actions">
                         <a class="button" href="#list/a">Take Roll</a>
@@ -210,36 +300,80 @@
                     </p>
                 `);
             },
-            list(filter) {
+
+            // PAGE: List page where attendance is taken
+            list(filter, modal) {
                 const letters = peopleList.map(i => i[0].toLowerCase()).filter(unique);
-                const links = letters.map(letter => (
-                    `<li>
-                        <a class="button" href="#list/${letter}" ${filter === letter ? 'disabled' : ''}>
+                const links = letters.map(letter => (html`
+                    <li>
+                        <a class="button letter" href="#list/${letter}" ${filter === letter ? 'disabled' : ''}>
                             ${letter}
                         </a>
-                    </li>`
-                )).join('');
+                    </li>
+                `));
+                links.push(html`
+                    <li>
+                        <a class="button visitor" href="#list/${filter || ''}/visitor">
+                            I'm a visitor
+                        </a>
+                    </li>
+                `);
+                const confirmModal = html`
+                    <div class="modal confirm-end">
+                        <div class="modal-block">
+                            <p>Are you sure you are done taking roll?</p>
+                            <p class="modal-ctas">
+                                <a class="button" href="#list/${filter || ''}">Cancel</a>
+                                <a href="#">Confirm</a>
+                            </p>
+                        </div>    
+                    </div>
+                `;
+                const visitorModal = html`
+                    <div class="modal visitor">
+                        <div class="modal-block">
+                            <p>We're happy to have you here!</p>
+                            <p>Which of the following best describes you?</p>
+                            <p id="gender-buttons">
+                                <button onclick="rollCall.markVisitor('Man')">Man</button>
+                                <button onclick="rollCall.markVisitor('Woman')">Woman</button><br>
+                                <button onclick="rollCall.markVisitor('Young Man')">Young Man</button>
+                                <button onclick="rollCall.markVisitor('Young Woman')">Young Woman</button>
+                                <button onclick="rollCall.markVisitor('Other')">Other, or prefer not to disclose</button>
+                            </p>
+                            <p class="modal-ctas">
+                                <a href="#list/${filter || ''}">Actually, I'm not a visitor</a>
+                            </p>
+                        </div>    
+                    </div>
+                `;
                 const attendanceToday = attendanceByDay[getToday()] || [];
                 const people = peopleList
                     .filter(i => filter === 'all' || i.toLowerCase().startsWith(filter))
                     .map(i => {
                         const attending = attendanceToday.indexOf(i) > -1;
-                        return `<li ${attending ? 'class="here"' : ''}>
-                            <span class="name">${i}</span>
-                            <button data-name="${i}" onclick="rollCall.markHere(this)" ${attending ? 'disabled' : ''}>
-                                ${attending ? '✓ Here' : 'I\'m here'}
-                            </button>
-                        </li>`
-                    }).join('');
-                render(`
+                        return html`
+                            <li ${attending ? 'class="here"' : ''}>
+                                <span class="name">${i}</span>
+                                <button data-name="${i}" onclick="rollCall.markHere(this)" ${attending ? 'disabled' : ''}>
+                                    ${attending ? '✓ Here' : 'I\'m here'}
+                                </button>
+                            </li>
+                        `;
+                    });
+                render(html`
                     <ul class="letter-links">${links}</ul>
                     <ul class="people-list">${people}</ul>
                     <ul class="letter-links">${links}</ul>
-                    <p class="actions"><a class="button" href="#">Done taking roll</a></p>
+                    <p class="actions"><a class="button" href="#list/${filter || ''}/confirm">Done taking roll</a></p>
+                    $${ modal === 'confirm' ? confirmModal : '' }
+                    $${ modal === 'visitor' ? visitorModal : '' }
                 `);
             },
+
+            // PAGE: Manage page where the class list is added and modified
             manage() {
-                render(`
+                render(html`
                     <h1>Manage People</h1>
                     <form id="setPeople">
                         <p>Enter a list of people (Last Name, First Name) with each person on their own line.</p>
@@ -257,19 +391,25 @@
                     lsSet('people', peopleList);
                 });
             },
+
+            // PAGE: Attendance where the attendance per day if viewed and cleared
             attendance() {
                 const attendance = Object.keys(attendanceByDay)
                     .sort(dateSort)
-                    .map(day => (
-                        `<section class="attendance">
+                    .map(day => (html`
+                        <section class="attendance">
                             <header>
                                 <h2>${day}</h2>
                                 <button onclick="rollCall.clearAttendance('${day}')">Clear</button>
                             </header>
-                            <ul>${attendanceByDay[day].map(i => `<li>${i}</li>`).join('')}</ul>
-                        </section>`
-                    )).join('');
-                render(`
+                            <ul>${attendanceByDay[day].map(i => html`<li>${i}</li>`)}</ul>
+                            <h3>Visitors</h3>
+                            <p class="visitor-counts">
+                                ${Object.keys(visitorsByDay[day] || {}).map(i => `${i}: ${visitorsByDay[day][i]}`).join(', ')}
+                            </p>
+                        </section>
+                    `));
+                render(html`
                     <h1>Attendance</h1>
                     <p class="actions">
                         <button onclick="rollCall.clearAttendance('all')">Clear All Attendance</button>
@@ -283,10 +423,13 @@
         function clearAttendance(date) {
             if (date === 'all') {
                 attendanceByDay = {};
+                visitorsByDay = {};
             } else {
                 delete attendanceByDay[date];
+                delete visitorsByDay[date];
             }
             lsSet('attendance', attendanceByDay);
+            lsSet('visitors', visitorsByDay);
             router();
         }
 
@@ -304,7 +447,19 @@
             lsSet('attendance', attendanceByDay);
             setTimeout(() => {
                 buttonEl.textContent = '✓ Here';
-            }, 1000)
+            }, 1000);
+        }
+
+        function markVisitor(gender) {
+            const today = getToday();
+            visitorsByDay[today] = visitorsByDay[today] || {};
+            visitorsByDay[today][gender] = visitorsByDay[today][gender] || 0;
+            visitorsByDay[today][gender] += 1;
+            lsSet('visitors', visitorsByDay);
+            document.getElementById('gender-buttons').innerHTML = '<strong>Got it! Glad you\'re here!</strong>';
+            setTimeout(() => {
+                location.hash = location.hash.replace('visitor', '');
+            }, 2000);
         }
 
         function router(e) {
@@ -318,6 +473,7 @@
             elementIds.forEach(e => elements[e] = document.getElementById(e));
             peopleList = lsGet('people') || [];
             attendanceByDay = lsGet('attendance') || {};
+            visitorsByDay = lsGet('visitors') || {};
             router();
             onhashchange = router;
         }
@@ -325,6 +481,7 @@
         return {
             init,
             markHere,
+            markVisitor,
             clearAttendance,
         }
     })();
