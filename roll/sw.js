@@ -1,7 +1,7 @@
 // https://github.com/codepo8/github-page-pwa/blob/main/sw.js
 var GHPATH = '/roll';
 var APP_PREFIX = 'roll_';
-var VERSION = 'version_000';
+var VERSION = 'version_001';
 var URLS = [    
   `${GHPATH}/`,
   `${GHPATH}/index.html`,
