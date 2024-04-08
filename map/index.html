@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+    <style>
+        :root {
+            --primary-color: deepskyblue;
+            --ui-color-stronger: #333;
+            --ui-color-strong: #999;
+            --ui-color: #ccc;
+            --ui-color-weak: #f0f0f0;
+            --ui-color-weaker: white;
+        }
+        html {
+            box-sizing: border-box;
+            font-family: sans-serif;
+            line-height: 1.25;
+            font-size: 16px;
+            background: var(--ui-color-weaker);
+            color: var(--ui-color-stronger);
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 25px;
+            padding: 0 16px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        h3 {
+            font-size: 19px;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+        }
+
+        button,
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: var(--ui-color-weaker);
+            border: 1px solid var(--primary-color);
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        button.secondary,
+        .button.secondary {
+            background: var(--ui-color-weak);
+            color: var(--ui-color-stronger);
+            border-color: var(--ui-color);
+        }
+
+        button[disabled],
+        .button[disabled] {
+            border-color: var(--ui-color);
+            color: var(--ui-color-strong);
+            background: transparent;
+            opacity: 1;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .button:hover {
+            text-decoration: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-family: monospace;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--ui-color);
+            padding: 8px 12px;
+        }
+
+        th {
+            background: var(--ui-color-weak);
+        }
+
+        .modal {
+            position: fixed;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow-x: auto;
+            background: #00000080;
+            padding: 16px;
+        }
+
+        .modal-block {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            background: var(--ui-color-weaker);
+            border-radius: 4px;
+        }
+
+        .modal-ctas {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    const wardMap = (() => {
+        const elementIds = ['app'];
+        const elements = {};
+        let savedData = {};
+        const streets = {
+            L: 'Davencourt Loop',
+            C: 'Davencourt Circle',
+            A: 'Apartments',
+            N: 'Newland Loop',
+            H: 'Harvest Cove',
+        };
+
+        function escapeHtml(s){
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(s));
+            return p.innerHTML;
+        }
+
+        function html(literals, ...substs) {
+            return literals.raw.reduce((acc, lit, i) => {
+                let subst = substs[i - 1];
+                if (Array.isArray(subst)) subst = subst.join('');
+                else if (literals.raw[i - 1] && literals.raw[i - 1].endsWith("$")) acc = acc.slice(0, -1);
+                else subst = escapeHtml(subst);
+                return acc + subst + lit;
+            });
+        }
+
+        // Local storage helpers
+        const lsGet = (k) => JSON.parse(localStorage.getItem(k) || '{}');
+        const lsSet = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+        const lsDel = (k) => localStorage.removeItem(k);
+
+        const alphaSort = (a, b) => a.localeCompare(b);
+        const dateSort = (a, b) => new Date(b) - new Date(a);
+        const unique = (val, idx, list) => list.indexOf(val) === idx;
+
+        function shortAddress(a) {
+            const firstFour = a.slice(0,4);
+            if (a.includes('Harvest')) return `H_${firstFour}`;
+            if (a.includes('New')) return `N_${firstFour}`;
+            if (a.includes('Davencourt Loop')) return `L_${firstFour}`;
+            if (a.includes('Davencourt Cir')) return `C_${firstFour}`;
+            if (a.includes('Apt ')) {
+                const [_first, second] = a.split('Apt ');
+                const firstThree = second?.slice(0, 3).trim();
+                return `A_${firstThree}`;
+            }
+            return '';
+        }
+        
+        function parseData(rawData) {
+            if (!Papa?.parse) return;
+            const parsed = Papa.parse(rawData)?.data || [];
+            if (!parsed.length) return;
+            const props = parsed[0].map(val => val ? val.toLowerCase().replace(/[\s-]+/g, '') : 'none');
+            const nameIdx = props.indexOf('name');
+            const addressIdx = props.indexOf('address');
+            if ([nameIdx, addressIdx].includes(-1)) return;
+            const people = parsed.slice(1).map((person) => {
+                return {
+                    name: person[nameIdx].replace(/\*/g, ''),
+                    address: shortAddress(person[addressIdx]),
+                };
+            }).filter(p => !!p.address);
+            const addresses = {};
+            people.forEach((person) => {
+                const [last, first] = person.name.split(', ');
+                const [streetCode, number] = person.address.split('_');
+                addresses[streetCode] = addresses[streetCode] || {};
+                addresses[streetCode][number] = addresses[streetCode][number] || {};
+                addresses[streetCode][number][last] = addresses[streetCode][number][last] || [];
+                addresses[streetCode][number][last].push(first);
+            });
+            savedData = addresses;
+            lsSet('data', savedData);
+            console.log(addresses);
+        };
+
+        function render(toRender) {
+            if (!elements.app) return;
+            elements.app.innerHTML = toRender;
+            scroll(0, 0);
+        }
+
+        const pages = {
+
+            // PAGE: Home Page With Admin Links
+            home() {
+                render(html`
+                    <h1>Map</h1>
+                    <p class="actions">
+                        <a class="button" href="#viewmap/L">View Map</a>
+                        <a class="button secondary" href="#upload">Upload Data</a>
+                    </p>
+                `);
+            },
+
+            // PAGE: Upload map data
+            upload() {
+                render(html`
+                    <h1>Upload Data</h1>
+                    <p>Upload a .csv file</p>
+                    <input id="csv-file-input" type="file" accept=".csv">
+                    <p class="actions"><a class="button" href="#">Back</a></p>
+                `);
+                const fileInput = document.getElementById('csv-file-input');
+                const readFile = () => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        parseData(reader.result);
+                    };
+                    // start reading the file. When it is done, calls the onload event defined above.
+                    reader.readAsBinaryString(fileInput.files[0]);
+                }
+
+                fileInput.addEventListener('change', readFile);
+            },
+
+            // PAGE: View Map
+            viewmap(streetCode) {
+                const streetName = streets[streetCode];
+                const streetButtons = Object.keys(streets).map((k) => {
+                    const name = streets[k];
+                    return html`<a class="button ${streetCode !== k ? 'secondary' : ''}" href="#viewmap/${k}">${name}</a>`;
+                });
+
+                const parentTd = (val, childIdx, numChildren) => {
+                    if (childIdx !== 0) return html``;
+                    return html`<td rowspan="${numChildren}">${val}</td>`;
+                };
+
+                const houseNumbers = Object.keys(savedData[streetCode]);
+                const peoplePerHouse = houseNumbers.map((num) => {
+                    return Object.values(savedData[streetCode][num]).reduce((sum, firstNames) => (sum + firstNames.length), 0);
+                });
+                const people = houseNumbers.flatMap((num, numIdx, numLst) => {
+                    const houseCount = peoplePerHouse[numIdx];
+                    const lastNames = Object.keys(savedData[streetCode][num]);
+                    return lastNames.flatMap((last, lastIdx) => {
+                        const firstNames = savedData[streetCode][num][last];
+                        return firstNames.map((first, firstIdx) => {
+                            const tds = [];
+                            if (!lastIdx && !firstIdx) tds.push(html`<td rowspan="${houseCount}">${num}</td>`);
+                            if (!firstIdx) tds.push(html`<td rowspan="${firstNames.length}">${last}</td>`);
+                            tds.push(html`<td>${first}</td>`);
+                            return html`<tr>${tds}</tr>`;
+                        }); 
+                    });
+                });
+                
+                render(html`
+                    <h1>Map</h1>
+                    <p class="actions">
+                      ${streetButtons}
+                    </p>
+                    <h2>${streetName}</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Number</th><th>Last Name</th><th>First Name</th></tr>
+                        </thead>
+                        <tbody>
+                            ${people}
+                        </tbody>
+                    </table>
+                    <p class="actions"><a class="button" href="#">Back</a></p>
+                `);
+            },
+        }
+
+        function router(e) {
+            e?.preventDefault();
+            const props = location.hash?.substring(1)?.split('/');
+            const page = props?.shift() || 'home';
+            if (pages[page]) pages[page](...props);
+        }
+
+        function init() {
+            savedData = lsGet('data') ;
+            elementIds.forEach(e => elements[e] = document.getElementById(e));
+            router();
+            onhashchange = router;
+        }
+
+        return {
+            init,
+        }
+    })();
+    document.addEventListener("DOMContentLoaded", wardMap.init);
+</script>
+</body>
+</html>
