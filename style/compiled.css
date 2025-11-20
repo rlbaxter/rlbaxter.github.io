@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
 
+:root {
+	--main-background: #1d1f21;
+	--card-background: #282a2e;
+	--text-color: #c5c8c6;
+	--secondary-text-color: #969896;
+	--button-color: #81a2be;
+}
+
 /* GLOBAL DEFAULTS */
 *,
 *:before,
@@ -19,7 +27,7 @@ body {
 /* TYPOGRAPHY */
 body {
 	font: 300 medium 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-	color: #c5c8c6;
+	color: var(--text-color);
 	line-height: 1.8;
 }
 
@@ -37,7 +45,7 @@ h6 {
 
 .subheader {
 	font-weight: 300;
-	color: #969896;
+	color: var(--secondary-text-color);
 }
 
 strong {
@@ -52,7 +60,7 @@ h5 { font-size: 120%; }
 h6 { font-size: 100%; }
 
 a {
-	color: #81a2be;
+	color: var(--button-color);
 	text-decoration: none;
 }
 
@@ -62,12 +70,12 @@ a:hover {
 
 button,
 .button {
-	border: 1px solid #81a2be;
+	border: 1px solid var(--button-color);
 	text-decoration: none;
 	cursor: pointer;
 	outline: 0;
-	-webkit-appearance: none;
-	color: #81a2be;
+	appearance: none;
+	color: var(--button-color);
 	border-radius: 4px;
 	padding: 5px 20px;
 	display: inline-block;
@@ -76,9 +84,11 @@ button,
 }
 
 button:hover,
-.button:hover {
-	background: #81a2be;
-	color: #282a2e;
+.button:hover,
+button:focus-visible,
+.button:focus-visible {
+	background: var(--button-color);
+	color: var(--card-background);
 	text-decoration: none;
 }
 
@@ -135,7 +145,7 @@ pre code {
 /* Site Style */
 html,
 body {
-	background: #1d1f21;
+	background: var(--main-background);
 }
 
 body {
@@ -149,48 +159,28 @@ body {
 
 .site {
 	margin: 0;
-	padding: 20px;
-	background: #282a2e;
+	padding: 45px 20px;
+	background: var(--card-background);
 	width: 100%;
-	max-width: 600px;
+	max-width: 620px;
 	box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
 
 a.email {
-	color: #cc6666;
-	border-color: #cc6666;
-}
-
-a.email:hover {
-	background: #cc6666;
+	--button-color: #d97575;
 }
 
 a.twitter {
-	color: #de935f;
-	border-color: #de935f;
-}
-
-a.twitter:hover {
-	background: #de935f;
+	--button-color: #de935f;
 }
 
 a.codepen {
-	color: #b5bd68;
-	border-color: #b5bd68;
-}
-
-a.codepen:hover {
-	background: #b5bd68;
+	--button-color: #b5bd68;
 }
 
 a.github {
-	color: #b294bb;
-	border-color: #b294bb;
-}
-
-a.github:hover {
-	background: #b294bb;
+	--button-color: #bb9dc3;
 }
 
 .header {
@@ -234,17 +224,22 @@ a.github:hover {
 
 .contact-buttons {
 	list-style: none;
-	margin: 0;
+	margin: 35px 0 0;
 	padding: 0;
-	text-align: center;
-	margin-top: 35px;
+	display: grid;
+	grid-template-columns: repeat(var(--contact-buttons-col-count, 1), 1fr);
+	gap: 12px;
 }
 
-.contact-buttons li {
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	margin-bottom: 10px;
+.contact-buttons a {
+	display: block;
+	text-align: center;
+}
+
+@media (min-width: 300px) {
+	.contact-buttons {
+		--contact-buttons-col-count: 2;
+	}
 }
 
 @media (min-width: 460px) {
@@ -253,7 +248,7 @@ a.github:hover {
 	}
 
 	.site {
-		padding: 30px;
+		padding: 65px 30px;
 	}
 
 	h1 {
@@ -299,11 +294,18 @@ a.github:hover {
 
 	.content {
 		padding-left: 15px;
+		padding-right: 15px;
 		margin-top: 30px;
 	}
 
 	.content h4 {
 		font-size: 160%;
+	}
+}
+
+@media (min-width: 620px) {
+	.contact-buttons {
+		--contact-buttons-col-count: 4;
 	}
 }
 
@@ -389,7 +391,7 @@ a.github:hover {
 }
 
 .site.resume .main h3:not(:first-of-type) {
-	margin-top: 60px;
+	margin-top: 50px;
 }
 
 @media screen and (max-width: 600px) {
